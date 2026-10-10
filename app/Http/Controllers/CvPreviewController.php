@@ -26,9 +26,9 @@ class CvPreviewController extends Controller
         return view('cv-preview.show', [
             'user' => $user,
             'profile' => $user->cvProfile,
-            'education' => $user->education()->orderByDesc('start_year')->get(),
-            'experiences' => $user->experiences()->orderByDesc('start_date')->get(),
-            'skills' => $user->skills()->orderBy('skill_name')->get(),
+            'education' => $user->education->sortByDesc('start_year')->values(),
+            'experiences' => $user->experiences->sortByDesc('start_date')->values(),
+            'skills' => $user->skills->sortBy('skill_name')->values(),
             'template' => $template,
         ]);
     }
@@ -64,9 +64,9 @@ class CvPreviewController extends Controller
             'user' => $user,
             'profile' => $profile,
             'photoBase64' => $photoBase64,
-            'education' => $user->education()->orderByDesc('start_year')->get(),
-            'experiences' => $user->experiences()->orderByDesc('start_date')->get(),
-            'skills' => $user->skills()->orderBy('skill_name')->get(),
+            'education' => $user->education->sortByDesc('start_year')->values(),
+            'experiences' => $user->experiences->sortByDesc('start_date')->values(),
+            'skills' => $user->skills->sortBy('skill_name')->values(),
             'template' => $template,
         ]);
 
