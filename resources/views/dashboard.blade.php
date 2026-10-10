@@ -144,10 +144,10 @@
                         </div>
                     </div>
 
-                    <div class="mt-6">
-                        <span class="block text-center py-2 px-4 rounded-xl bg-gray-50 dark:bg-gray-700/40 text-gray-400 dark:text-gray-500 text-xs font-medium">
-                            CRUD Form (Sprint Lanjutan)
-                        </span>
+                    <div class="mt-6 flex flex-col gap-2">
+                        <a href="{{ route('education.index') }}" class="block text-center py-2 px-4 rounded-xl bg-violet-50 dark:bg-violet-900/40 hover:bg-violet-100 dark:hover:bg-violet-800/60 text-violet-700 dark:text-violet-300 text-xs font-bold transition">
+                            Kelola Pendidikan
+                        </a>
                     </div>
                 </div>
 
@@ -170,10 +170,13 @@
                         </div>
                     </div>
 
-                    <div class="mt-6">
-                        <span class="block text-center py-2 px-4 rounded-xl bg-gray-50 dark:bg-gray-700/40 text-gray-400 dark:text-gray-500 text-xs font-medium">
-                            CRUD Form (Sprint Lanjutan)
-                        </span>
+                    <div class="mt-6 flex flex-col sm:flex-row gap-2">
+                        <a href="{{ route('experience.index') }}" class="flex-1 text-center py-2 px-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 hover:bg-emerald-100 dark:hover:bg-emerald-800/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition">
+                            Pengalaman
+                        </a>
+                        <a href="{{ route('skills.index') }}" class="flex-1 text-center py-2 px-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/40 hover:bg-emerald-100 dark:hover:bg-emerald-800/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition">
+                            Keahlian
+                        </a>
                     </div>
                 </div>
             </div>
