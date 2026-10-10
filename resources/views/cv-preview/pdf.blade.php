@@ -27,14 +27,14 @@
         .uppercase { text-transform: uppercase; }
 
         /* Modern Template Accent */
-        .color-primary { color: #4338ca; }
-        .bg-primary { background-color: #4338ca; }
-        .border-primary { border-color: #4338ca; }
+        .color-primary { color: {{ $profile?->theme_color ?? '#4338ca' }}; }
+        .bg-primary { background-color: {{ $profile?->theme_color ?? '#4338ca' }}; }
+        .border-primary { border-color: {{ $profile?->theme_color ?? '#4338ca' }}; }
 
         /* Header */
         .header-table {
             width: 100%;
-            border-bottom: 2px solid #4338ca;
+            border-bottom: 2px solid {{ $profile?->theme_color ?? '#4338ca' }};
             padding-bottom: 14px;
             margin-bottom: 16px;
         }
@@ -49,7 +49,7 @@
 
         .candidate-headline {
             font-size: 13px;
-            color: #4338ca;
+            color: {{ $profile?->theme_color ?? '#4338ca' }};
             font-weight: 600;
             margin: 0 0 8px 0;
         }
@@ -89,7 +89,7 @@
         }
 
         .section-title span {
-            color: #4338ca;
+            color: {{ $profile?->theme_color ?? '#4338ca' }};
             margin-right: 4px;
         }
 
@@ -124,7 +124,7 @@
 
         .item-sub {
             font-size: 10px;
-            color: #4338ca;
+            color: {{ $profile?->theme_color ?? '#4338ca' }};
             font-weight: 600;
             margin-bottom: 3px;
         }
@@ -156,7 +156,7 @@
 
         .skill-level {
             font-size: 8.5px;
-            color: #4338ca;
+            color: {{ $profile?->theme_color ?? '#4338ca' }};
             font-weight: bold;
             margin-left: 3px;
         }

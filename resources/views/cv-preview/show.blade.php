@@ -77,6 +77,15 @@
 
             <!-- Paper Container (A4 Simulation) -->
             <div class="flex justify-center">
+                @php
+                    $accent = $profile?->theme_color ?? '#4f46e5';
+                @endphp
+                <style>
+                    #cv-paper .text-indigo-600, #cv-paper .text-indigo-500, #cv-paper .text-indigo-900 { color: {{ $accent }} !important; }
+                    #cv-paper .bg-indigo-600, #cv-paper .bg-indigo-500 { background-color: {{ $accent }} !important; }
+                    #cv-paper .border-indigo-600, #cv-paper .border-indigo-200, #cv-paper .border-indigo-100 { border-color: {{ $accent }} !important; }
+                    #cv-paper .bg-indigo-50 { background-color: {{ $accent }}20 !important; } /* 20 is hex opacity */
+                </style>
                 <div id="cv-paper" class="w-full max-w-[210mm] min-h-[297mm] bg-white text-slate-900 p-8 sm:p-12 shadow-2xl rounded-sm border border-gray-200 transition-all font-sans">
 
                     @if ($template === 'modern')
@@ -118,10 +127,16 @@
 
                                     <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-indigo-600 font-medium pt-1">
                                         @if ($profile?->linkedin_url)
-                                            <a href="{{ $profile->linkedin_url }}" target="_blank" class="hover:underline">LinkedIn: {{ $profile->linkedin_url }}</a>
+                                            <a href="{{ $profile->linkedin_url }}" target="_blank" class="inline-flex items-center gap-1 hover:underline">
+                                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                                                LinkedIn
+                                            </a>
                                         @endif
                                         @if ($profile?->portfolio_url)
-                                            <a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline">Portfolio: {{ $profile->portfolio_url }}</a>
+                                            <a href="{{ $profile->portfolio_url }}" target="_blank" class="inline-flex items-center gap-1 hover:underline">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+                                                Portofolio
+                                            </a>
                                         @endif
                                     </div>
                                 </div>
@@ -238,8 +253,9 @@
                                 </div>
                                 @if ($profile?->linkedin_url || $profile?->portfolio_url)
                                     <div class="text-xs text-slate-600 mt-1 space-x-2">
-                                        @if ($profile?->linkedin_url) <span>LinkedIn: {{ $profile->linkedin_url }}</span> @endif
-                                        @if ($profile?->portfolio_url) <span>| Portfolio: {{ $profile->portfolio_url }}</span> @endif
+                                        @if ($profile?->linkedin_url) <a href="{{ $profile->linkedin_url }}" target="_blank" class="hover:underline text-slate-800 font-medium">LinkedIn</a> @endif
+                                        @if ($profile?->linkedin_url && $profile?->portfolio_url) <span>|</span> @endif
+                                        @if ($profile?->portfolio_url) <a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline text-slate-800 font-medium">Portofolio</a> @endif
                                     </div>
                                 @endif
                             </div>
@@ -324,6 +340,8 @@
                                     <div>{{ $profile?->email_cv ?? $user->email }}</div>
                                     @if ($profile?->phone) <div>{{ $profile->phone }}</div> @endif
                                     @if ($profile?->address) <div>{{ $profile->address }}</div> @endif
+                                    @if ($profile?->linkedin_url) <div><a href="{{ $profile->linkedin_url }}" target="_blank" class="hover:underline">LinkedIn</a></div> @endif
+                                    @if ($profile?->portfolio_url) <div><a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline">Portofolio</a></div> @endif
                                 </div>
                             </div>
 

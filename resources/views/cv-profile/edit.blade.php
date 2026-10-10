@@ -274,7 +274,17 @@
                                           class="mt-1 block w-full rounded-xl" 
                                           :value="old('portfolio_url', $profile?->portfolio_url ?? '')" 
                                           placeholder="https://budisantoso.dev" />
-                            <x-input-error class="mt-2" :messages="$errors->get('portfolio_url')" />
+                        </div>
+
+                        <div>
+                            <x-input-label for="theme_color" :value="__('Warna Aksen CV')" />
+                            <div class="flex items-center gap-3 mt-1">
+                                <input type="color" id="theme_color" name="theme_color" 
+                                       value="{{ old('theme_color', $profile?->theme_color ?? '#4f46e5') }}" 
+                                       class="h-10 w-14 rounded-lg cursor-pointer border-0 bg-transparent p-0">
+                                <span class="text-sm text-gray-500 dark:text-gray-400">Pilih warna utama untuk template CV Anda</span>
+                            </div>
+                            <x-input-error class="mt-2" :messages="$errors->get('theme_color')" />
                         </div>
                     </div>
                 </div>
