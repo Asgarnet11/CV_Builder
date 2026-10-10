@@ -21,15 +21,7 @@
     <div class="py-10">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            <!-- Flash Success Notification -->
-            @if (session('status'))
-                <div class="p-4 mb-4 text-sm text-emerald-800 dark:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-800 rounded-xl flex items-center shadow-sm" role="alert">
-                    <svg class="w-5 h-5 mr-3 shrink-0 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                    </svg>
-                    <span class="font-medium">{{ session('status') }}</span>
-                </div>
-            @endif
+
 
             <!-- Validation Errors Summary -->
             @if ($errors->any())
@@ -103,13 +95,79 @@
                     </h3>
 
                     <!-- Foto Profil Section -->
-                    <div class="mb-8" x-data="{ photoName: null, photoPreview: null }">
+                    <div class="mb-8" x-data="{ 
+                        photoName: null, 
+                        photoPreview: null,
+                        showCropper: false,
+                        cropper: null,
+                        initCropper(imageUrl) {
+                            this.showCropper = true;
+                            this.$nextTick(() => {
+                                const image = document.getElementById('cropper-image');
+                                image.src = imageUrl;
+                                if (this.cropper) {
+                                    this.cropper.destroy();
+                                }
+                                this.cropper = new Cropper(image, {
+                                    aspectRatio: 1,
+                                    viewMode: 1,
+                                });
+                            });
+                        },
+                        cropImage() {
+                            if (!this.cropper) return;
+                            const canvas = this.cropper.getCroppedCanvas({
+                                width: 400,
+                                height: 400
+                            });
+                            const base64 = canvas.toDataURL('image/jpeg', 0.9);
+                            this.photoPreview = base64;
+                            this.showCropper = false;
+                            
+                            // Upload via AJAX immediately
+                            fetch('{{ route('cv-profile.update-photo') }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name=\'csrf-token\']').getAttribute('content')
+                                },
+                                body: JSON.stringify({ photo_base64: base64 })
+                            }).then(res => res.json()).then(data => {
+                                if(data.status === 'success') {
+                                    console.log('Photo updated');
+                                }
+                            });
+                        },
+                        cancelCrop() {
+                            this.showCropper = false;
+                            if (this.cropper) {
+                                this.cropper.destroy();
+                                this.cropper = null;
+                            }
+                        }
+                    }">
                         <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
                             {{ __('Foto Profil Formal') }}
                         </label>
                         <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
                             {{ __('Format: JPG, JPEG, PNG. Maksimal ukuran file: 2 MB (2048 KB).') }}
                         </p>
+
+                        <!-- Modal Cropper -->
+                        <div x-show="showCropper" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
+                            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col" @click.away="cancelCrop">
+                                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Potong Foto Profil</h3>
+                                </div>
+                                <div class="p-4 bg-gray-50 dark:bg-gray-900 h-[400px]">
+                                    <img id="cropper-image" src="" class="max-w-full block" alt="Crop Image">
+                                </div>
+                                <div class="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
+                                    <button type="button" @click="cancelCrop" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">Batal</button>
+                                    <button type="button" @click="cropImage" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">Potong & Simpan</button>
+                                </div>
+                            </div>
+                        </div>
 
                         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                             <!-- Image Display / Placeholder -->
@@ -150,17 +208,20 @@
                             <div class="flex-1 space-y-3">
                                 <input type="file" 
                                        id="photo" 
-                                       name="photo" 
+                                       name="photo_dummy" 
                                        accept="image/png, image/jpeg, image/jpg"
                                        class="hidden" 
                                        x-ref="photo"
                                        x-on:change="
-                                           photoName = $refs.photo.files[0].name;
-                                           const reader = new FileReader();
-                                           reader.onload = (e) => {
-                                               photoPreview = e.target.result;
-                                           };
-                                           reader.readAsDataURL($refs.photo.files[0]);
+                                           if ($refs.photo.files.length > 0) {
+                                               photoName = $refs.photo.files[0].name;
+                                               const reader = new FileReader();
+                                               reader.onload = (e) => {
+                                                   initCropper(e.target.result);
+                                               };
+                                               reader.readAsDataURL($refs.photo.files[0]);
+                                               $refs.photo.value = null;
+                                           }
                                        " />
 
                                 <div class="flex flex-wrap items-center gap-3">
@@ -395,3 +456,11 @@
         </div>
     </div>
 </x-app-layout>
+
+@push('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" />
+@endpush
+
+@push('scripts')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+@endpush
