@@ -232,7 +232,7 @@
                 </tr>
                 @if ($exp->description)
                     <tr>
-                        <td colspan="2" class="item-desc">{{ $exp->description }}</td>
+                        <td colspan="2" class="item-desc">{!! $exp->description !!}</td>
                     </tr>
                 @endif
             </table>
@@ -255,7 +255,7 @@
                 </tr>
                 @if ($edu->description)
                     <tr>
-                        <td colspan="2" class="item-desc">{{ $edu->description }}</td>
+                        <td colspan="2" class="item-desc">{!! $edu->description !!}</td>
                     </tr>
                 @endif
             </table>

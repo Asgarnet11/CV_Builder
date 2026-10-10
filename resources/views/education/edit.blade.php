@@ -40,7 +40,8 @@
 
                     <div>
                         <x-input-label for="description" :value="__('Deskripsi Singkat / Pencapaian (Opsional)')" />
-                        <textarea id="description" name="description" rows="4" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-lg shadow-sm">{{ old('description', $education->description) }}</textarea>
+                        <input id="description" type="hidden" name="description" value="{{ old('description', $education->description) }}">
+                        <trix-editor input="description" class="trix-content mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm min-h-[150px]"></trix-editor>
                         <x-input-error class="mt-2" :messages="$errors->get('description')" />
                     </div>
 
@@ -55,3 +56,24 @@
         </div>
     </div>
 </x-app-layout>
+
+@push('styles')
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+    <style>
+        trix-toolbar [data-trix-button-group="file-tools"] {
+            display: none;
+        }
+        .trix-content {
+            background-color: transparent;
+        }
+    </style>
+@endpush
+
+@push('scripts')
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+    <script>
+        document.addEventListener("trix-file-accept", function(event) {
+            event.preventDefault();
+        });
+    </script>
+@endpush

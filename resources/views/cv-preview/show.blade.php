@@ -183,7 +183,7 @@
                                                 </div>
                                                 <div class="text-xs font-semibold text-indigo-600">{{ $exp->company_name }}</div>
                                                 @if ($exp->description)
-                                                    <p class="text-xs text-slate-600 mt-1 leading-relaxed">{{ $exp->description }}</p>
+                                                    <p class="text-xs text-slate-600 mt-1 leading-relaxed">{!! $exp->description !!}</p>
                                                 @endif
                                             </div>
                                         @endforeach
@@ -207,7 +207,7 @@
                                                 </div>
                                                 <div class="text-xs font-semibold text-indigo-600">{{ $edu->degree }}</div>
                                                 @if ($edu->description)
-                                                    <p class="text-xs text-slate-600 mt-0.5">{{ $edu->description }}</p>
+                                                    <p class="text-xs text-slate-600 mt-0.5">{!! $edu->description !!}</p>
                                                 @endif
                                             </div>
                                         @endforeach
@@ -285,7 +285,7 @@
                                                     </span>
                                                 </div>
                                                 @if ($exp->description)
-                                                    <p class="text-xs text-slate-600 mt-1 leading-relaxed">{{ $exp->description }}</p>
+                                                    <p class="text-xs text-slate-600 mt-1 leading-relaxed">{!! $exp->description !!}</p>
                                                 @endif
                                             </div>
                                         @endforeach
@@ -366,7 +366,7 @@
                                                     </span>
                                                 </div>
                                                 @if ($exp->description)
-                                                    <p class="text-xs text-slate-600 mt-1">{{ $exp->description }}</p>
+                                                    <p class="text-xs text-slate-600 mt-1">{!! $exp->description !!}</p>
                                                 @endif
                                             </div>
                                         @endforeach
