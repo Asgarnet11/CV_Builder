@@ -70,7 +70,7 @@ class CvPreviewController extends Controller
         $sanitizedName = Str::slug($candidateName, '_');
         $filename = 'LaraCV_'.$sanitizedName.'.pdf';
 
-        $pdf = Pdf::loadView('cv-preview.pdf', [
+        $pdf = Pdf::loadView('cv-preview.pdf-'.$template, [
             'user' => $user,
             'profile' => $profile,
             'photoBase64' => $photoBase64,
