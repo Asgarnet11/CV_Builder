@@ -26,8 +26,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::post('/education/reorder', [EducationController::class, 'reorder'])->name('education.reorder');
     Route::resource('education', EducationController::class)->except(['show']);
+
+    Route::post('/experience/reorder', [ExperienceController::class, 'reorder'])->name('experience.reorder');
     Route::resource('experience', ExperienceController::class)->except(['show']);
+
+    Route::post('/skills/reorder', [SkillController::class, 'reorder'])->name('skills.reorder');
     Route::resource('skills', SkillController::class)->except(['show']);
 });
 

@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreExperienceRequest;
 use App\Http\Requests\UpdateExperienceRequest;
 use App\Models\Experience;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class ExperienceController extends Controller
 {
     public function index()
     {
-        $experiences = auth()->user()->experiences()->orderByDesc('start_date')->get();
+        $experiences = auth()->user()->experiences()->orderBy('order_index')->orderByDesc('start_date')->get();
 
         return view('experience.index', compact('experiences'));
     }
@@ -54,5 +56,29 @@ class ExperienceController extends Controller
         $experience->delete();
 
         return redirect()->route('experience.index')->with('status', 'Pengalaman berhasil dihapus.');
+    }
+
+    /**
+     * Reorder the experiences.
+     */
+    public function reorder(Request $request): JsonResponse
+    {
+        $request->validate([
+            'orders' => ['required', 'array'],
+            'orders.*.id' => ['required', 'integer', 'exists:experiences,id'],
+            'orders.*.order_index' => ['required', 'integer'],
+        ]);
+
+        foreach ($request->orders as $order) {
+            $experience = Experience::where('id', $order['id'])
+                ->where('user_id', $request->user()->id)
+                ->first();
+
+            if ($experience) {
+                $experience->update(['order_index' => $order['order_index']]);
+            }
+        }
+
+        return response()->json(['message' => 'Urutan berhasil disimpan.']);
     }
 }

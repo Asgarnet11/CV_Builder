@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreEducationRequest;
 use App\Http\Requests\UpdateEducationRequest;
 use App\Models\Education;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class EducationController extends Controller
 {
     public function index()
     {
-        $education = auth()->user()->education()->orderByDesc('start_year')->get();
+        $education = auth()->user()->education()->orderBy('order_index')->orderByDesc('start_year')->get();
 
         return view('education.index', compact('education'));
     }
@@ -54,5 +56,29 @@ class EducationController extends Controller
         $education->delete();
 
         return redirect()->route('education.index')->with('status', 'Pendidikan berhasil dihapus.');
+    }
+
+    /**
+     * Reorder the education.
+     */
+    public function reorder(Request $request): JsonResponse
+    {
+        $request->validate([
+            'orders' => ['required', 'array'],
+            'orders.*.id' => ['required', 'integer', 'exists:education,id'],
+            'orders.*.order_index' => ['required', 'integer'],
+        ]);
+
+        foreach ($request->orders as $order) {
+            $education = Education::where('id', $order['id'])
+                ->where('user_id', $request->user()->id)
+                ->first();
+
+            if ($education) {
+                $education->update(['order_index' => $order['order_index']]);
+            }
+        }
+
+        return response()->json(['message' => 'Urutan berhasil disimpan.']);
     }
 }

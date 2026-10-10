@@ -16,7 +16,12 @@ class CvPreviewController extends Controller
      */
     public function show(Request $request): View
     {
-        $user = $request->user()->load(['cvProfile', 'education', 'experiences', 'skills']);
+        $user = $request->user()->load([
+            'cvProfile',
+            'education' => fn ($q) => $q->orderBy('order_index')->orderByDesc('start_year'),
+            'experiences' => fn ($q) => $q->orderBy('order_index')->orderByDesc('start_date'),
+            'skills' => fn ($q) => $q->orderBy('order_index')->orderBy('skill_name'),
+        ]);
         $template = $request->query('template', 'modern');
 
         if (! in_array($template, ['modern', 'classic', 'minimal'], true)) {
@@ -26,9 +31,9 @@ class CvPreviewController extends Controller
         return view('cv-preview.show', [
             'user' => $user,
             'profile' => $user->cvProfile,
-            'education' => $user->education->sortByDesc('start_year')->values(),
-            'experiences' => $user->experiences->sortByDesc('start_date')->values(),
-            'skills' => $user->skills->sortBy('skill_name')->values(),
+            'education' => $user->education,
+            'experiences' => $user->experiences,
+            'skills' => $user->skills,
             'template' => $template,
         ]);
     }
@@ -38,7 +43,12 @@ class CvPreviewController extends Controller
      */
     public function downloadPdf(Request $request): Response
     {
-        $user = $request->user()->load(['cvProfile', 'education', 'experiences', 'skills']);
+        $user = $request->user()->load([
+            'cvProfile',
+            'education' => fn ($q) => $q->orderBy('order_index')->orderByDesc('start_year'),
+            'experiences' => fn ($q) => $q->orderBy('order_index')->orderByDesc('start_date'),
+            'skills' => fn ($q) => $q->orderBy('order_index')->orderBy('skill_name'),
+        ]);
         $profile = $user->cvProfile;
         $template = $request->query('template', 'modern');
 
@@ -64,9 +74,9 @@ class CvPreviewController extends Controller
             'user' => $user,
             'profile' => $profile,
             'photoBase64' => $photoBase64,
-            'education' => $user->education->sortByDesc('start_year')->values(),
-            'experiences' => $user->experiences->sortByDesc('start_date')->values(),
-            'skills' => $user->skills->sortBy('skill_name')->values(),
+            'education' => $user->education,
+            'experiences' => $user->experiences,
+            'skills' => $user->skills,
             'template' => $template,
         ]);
 

@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreSkillRequest;
 use App\Http\Requests\UpdateSkillRequest;
 use App\Models\Skill;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 
 class SkillController extends Controller
 {
     public function index()
     {
-        $skills = auth()->user()->skills()->orderBy('skill_name')->get();
+        $skills = auth()->user()->skills()->orderBy('order_index')->orderBy('skill_name')->get();
 
         return view('skills.index', compact('skills'));
     }
@@ -54,5 +56,29 @@ class SkillController extends Controller
         $skill->delete();
 
         return redirect()->route('skills.index')->with('status', 'Keahlian berhasil dihapus.');
+    }
+
+    /**
+     * Reorder the skills.
+     */
+    public function reorder(Request $request): JsonResponse
+    {
+        $request->validate([
+            'orders' => ['required', 'array'],
+            'orders.*.id' => ['required', 'integer', 'exists:skills,id'],
+            'orders.*.order_index' => ['required', 'integer'],
+        ]);
+
+        foreach ($request->orders as $order) {
+            $skill = Skill::where('id', $order['id'])
+                ->where('user_id', $request->user()->id)
+                ->first();
+
+            if ($skill) {
+                $skill->update(['order_index' => $order['order_index']]);
+            }
+        }
+
+        return response()->json(['message' => 'Urutan berhasil disimpan.']);
     }
 }

@@ -46,18 +46,23 @@
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Mulai tambahkan perjalanan karir Anda.</p>
                     </div>
                 @else
-                    <div class="space-y-4">
+                    <div class="space-y-4" x-data="sortableList('{{ route('experience.reorder') }}')">
                         @foreach ($experiences as $exp)
-                            <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 hover:border-emerald-300 dark:hover:border-emerald-600 transition group">
-                                <div>
+                            <div data-id="{{ $exp->id }}" class="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 hover:border-emerald-300 dark:hover:border-emerald-600 transition group">
+                                <div class="flex items-center gap-3">
+                                    <div class="drag-handle cursor-grab text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path></svg>
+                                    </div>
+                                    <div>
                                     <h4 class="text-lg font-bold text-gray-900 dark:text-gray-100">{{ $exp->position }}</h4>
                                     <div class="text-sm font-semibold text-emerald-600 dark:text-emerald-400">{{ $exp->company_name }}</div>
                                     <div class="text-xs text-gray-500 mt-1">
                                         {{ \Carbon\Carbon::parse($exp->start_date)->translatedFormat('F Y') }} - 
                                         {{ $exp->is_current ? 'Sekarang' : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->translatedFormat('F Y') : '-') }}
                                     </div>
+                                    </div>
                                 </div>
-                                <div class="mt-4 sm:mt-0 flex items-center gap-2">
+                                <div class="mt-4 sm:mt-0 flex items-center gap-2 pl-8 sm:pl-0">
                                     <a href="{{ route('experience.edit', $exp) }}" class="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 transition">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                                     </a>
@@ -77,3 +82,38 @@
         </div>
     </div>
 </x-app-layout>
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('sortableList', (endpoint) => ({
+                init() {
+                    new Sortable(this.$el, {
+                        handle: '.drag-handle',
+                        animation: 150,
+                        ghostClass: 'opacity-50',
+                        onEnd: (evt) => {
+                            let items = Array.from(this.$el.children);
+                            let orders = items.map((item, index) => ({
+                                id: item.dataset.id,
+                                order_index: index
+                            }));
+                            
+                            fetch(endpoint, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                },
+                                body: JSON.stringify({ orders: orders })
+                            }).then(res => res.json()).then(data => {
+                                // Optional: show toast or indication of save
+                            });
+                        }
+                    });
+                }
+            }));
+        });
+    </script>
+@endpush

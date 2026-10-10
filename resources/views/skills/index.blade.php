@@ -46,14 +46,19 @@
                         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Tambahkan skill Anda untuk memperkuat profil CV.</p>
                     </div>
                 @else
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" x-data="sortableList('{{ route('skills.reorder') }}')">
                         @foreach ($skills as $skill)
-                            <div class="flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 hover:border-rose-300 dark:hover:border-rose-600 transition group">
-                                <div>
+                            <div data-id="{{ $skill->id }}" class="flex items-center justify-between p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 hover:border-rose-300 dark:hover:border-rose-600 transition group">
+                                <div class="flex items-center gap-3">
+                                    <div class="drag-handle cursor-grab text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16"></path></svg>
+                                    </div>
+                                    <div>
                                     <h4 class="font-bold text-gray-900 dark:text-gray-100">{{ $skill->skill_name }}</h4>
                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 mt-1">
                                         {{ $skill->level }}
                                     </span>
+                                    </div>
                                 </div>
                                 <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <a href="{{ route('skills.edit', $skill) }}" class="p-1.5 text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition">
@@ -75,3 +80,38 @@
         </div>
     </div>
 </x-app-layout>
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('sortableList', (endpoint) => ({
+                init() {
+                    new Sortable(this.$el, {
+                        handle: '.drag-handle',
+                        animation: 150,
+                        ghostClass: 'opacity-50',
+                        onEnd: (evt) => {
+                            let items = Array.from(this.$el.children);
+                            let orders = items.map((item, index) => ({
+                                id: item.dataset.id,
+                                order_index: index
+                            }));
+                            
+                            fetch(endpoint, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                },
+                                body: JSON.stringify({ orders: orders })
+                            }).then(res => res.json()).then(data => {
+                                // Optional: show toast or indication of save
+                            });
+                        }
+                    });
+                }
+            }));
+        });
+    </script>
+@endpush
