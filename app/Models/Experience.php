@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Experience extends Model
 {
     /** @use HasFactory<ExperienceFactory> */
-    use HasFactory;
+    use \App\Traits\ClearsCvCache, HasFactory;
 
     /**
      * The attributes that aren't mass assignable.

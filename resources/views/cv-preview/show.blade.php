@@ -19,6 +19,19 @@
                     {{ __('Edit Biodata') }}
                 </a>
 
+                @if ($profile && $profile->slug)
+                    <div x-data="{ copied: false }" class="relative inline-block">
+                        <button @click="navigator.clipboard.writeText('{{ route('public.cv', ['slug' => $profile->slug, 'template' => $template]) }}'); copied = true; setTimeout(() => copied = false, 2000)" 
+                                class="inline-flex items-center px-4 py-2.5 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 text-sm font-semibold rounded-xl transition shadow-sm border border-emerald-200 dark:border-emerald-800">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                            </svg>
+                            <span x-show="!copied">Link Publik</span>
+                            <span x-show="copied">Tersalin!</span>
+                        </button>
+                    </div>
+                @endif
+
                 <button onclick="window.print()" class="inline-flex items-center px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-sm font-semibold rounded-xl transition shadow-sm">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>

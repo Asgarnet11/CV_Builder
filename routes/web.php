@@ -6,6 +6,7 @@ use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExperienceController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicCvController;
 use App\Http\Controllers\SkillController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,9 +16,13 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+// Public CV Route
+Route::get('/cv/{slug}', [PublicCvController::class, 'show'])->name('public.cv');
+
 Route::middleware('auth')->group(function () {
     Route::get('/cv-profile', [CvProfileController::class, 'edit'])->name('cv-profile.edit');
     Route::put('/cv-profile', [CvProfileController::class, 'update'])->name('cv-profile.update');
+    Route::post('/cv-profile/photo', [CvProfileController::class, 'updatePhoto'])->name('cv-profile.update-photo');
 
     Route::get('/cv-preview', [CvPreviewController::class, 'show'])->name('cv-preview.show');
     Route::get('/cv-preview/download', [CvPreviewController::class, 'downloadPdf'])->name('cv-preview.download');

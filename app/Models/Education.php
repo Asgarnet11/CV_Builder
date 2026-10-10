@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Education extends Model
 {
     /** @use HasFactory<EducationFactory> */
-    use HasFactory;
+    use \App\Traits\ClearsCvCache, HasFactory;
 
     /**
      * The table associated with the model.

@@ -6,11 +6,12 @@ use Database\Factories\CvProfileFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 
 class CvProfile extends Model
 {
     /** @use HasFactory<CvProfileFactory> */
-    use HasFactory;
+    use \App\Traits\ClearsCvCache, HasFactory;
 
     /**
      * The attributes that aren't mass assignable.
@@ -25,5 +26,22 @@ class CvProfile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($profile) {
+            if (empty($profile->slug)) {
+                $baseSlug = Str::slug($profile->full_name ?? $profile->user->name ?? 'user');
+                $slug = $baseSlug;
+                $count = 1;
+                while (static::where('slug', $slug)->exists()) {
+                    $slug = $baseSlug.'-'.$count++;
+                }
+                $profile->slug = $slug;
+            }
+        });
     }
 }
