@@ -216,7 +216,7 @@
     @endif
 
     <!-- Pengalaman Kerja -->
-    @if ($experiences->count() > 0)
+    @if ($experiences->count() > 0 && ($profile->show_experience ?? true))
         <div class="section-title"><span>■</span> Pengalaman Kerja</div>
         @foreach ($experiences as $exp)
             <table class="item-table">
@@ -240,7 +240,7 @@
     @endif
 
     <!-- Riwayat Pendidikan -->
-    @if ($education->count() > 0)
+    @if ($education->count() > 0 && ($profile->show_education ?? true))
         <div class="section-title"><span>■</span> Riwayat Pendidikan</div>
         @foreach ($education as $edu)
             <table class="item-table">
@@ -263,7 +263,7 @@
     @endif
 
     <!-- Keterampilan / Skills -->
-    @if ($skills->count() > 0)
+    @if ($skills->count() > 0 && ($profile->show_skills ?? true))
         <div class="section-title"><span>■</span> Keahlian & Kompetensi</div>
         <div style="margin-top: 4px;">
             @foreach ($skills as $skill)

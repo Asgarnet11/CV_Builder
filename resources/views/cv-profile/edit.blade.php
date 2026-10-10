@@ -324,6 +324,58 @@
                     </div>
                 </div>
 
+                <!-- Display Settings Block -->
+                <div class="bg-white dark:bg-gray-800 shadow-sm sm:rounded-2xl border border-gray-100 dark:border-gray-700 overflow-hidden">
+                    <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50 flex items-center justify-between">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900 dark:text-gray-100">
+                                {{ __('Pengaturan Tampilan CV') }}
+                            </h3>
+                            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                                {{ __('Pilih bagian mana yang ingin ditampilkan atau disembunyikan pada hasil akhir CV Anda.') }}
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Show Education -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="show_education" name="show_education" value="1" 
+                                       {{ old('show_education', $profile?->show_education ?? true) ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 h-5 w-5 cursor-pointer @change="autoSave"">
+                                <label for="show_education" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                                    {{ __('Tampilkan Pendidikan') }}
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Show Experience -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="show_experience" name="show_experience" value="1" 
+                                       {{ old('show_experience', $profile?->show_experience ?? true) ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 h-5 w-5 cursor-pointer @change="autoSave"">
+                                <label for="show_experience" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                                    {{ __('Tampilkan Pengalaman') }}
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Show Skills -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="show_skills" name="show_skills" value="1" 
+                                       {{ old('show_skills', $profile?->show_skills ?? true) ? 'checked' : '' }}
+                                       class="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 h-5 w-5 cursor-pointer @change="autoSave"">
+                                <label for="show_skills" class="ml-3 block text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer">
+                                    {{ __('Tampilkan Keahlian') }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Form Actions -->
                 <div class="flex items-center justify-end gap-4 pt-4">
                     <a href="{{ route('dashboard') }}" class="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-semibold text-sm transition">

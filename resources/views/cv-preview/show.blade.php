@@ -165,7 +165,7 @@
                             @endif
 
                             <!-- Experiences Section -->
-                            @if ($experiences->count() > 0)
+                            @if ($experiences->count() > 0 && ($profile->show_experience ?? true))
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 flex items-center gap-1.5">
                                         <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
@@ -192,7 +192,7 @@
                             @endif
 
                             <!-- Education Section -->
-                            @if ($education->count() > 0)
+                            @if ($education->count() > 0 && ($profile->show_education ?? true))
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 flex items-center gap-1.5">
                                         <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
@@ -216,7 +216,7 @@
                             @endif
 
                             <!-- Skills Section -->
-                            @if ($skills->count() > 0)
+                            @if ($skills->count() > 0 && ($profile->show_skills ?? true))
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 flex items-center gap-1.5">
                                         <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
@@ -312,7 +312,7 @@
                                 </div>
                             @endif
 
-                            @if ($skills->count() > 0)
+                            @if ($skills->count() > 0 && ($profile->show_skills ?? true))
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800 border-b border-slate-300 pb-1 mb-2">
                                         KEAHLIAN
@@ -388,7 +388,7 @@
                                 </div>
                             @endif
 
-                            @if ($skills->count() > 0)
+                            @if ($skills->count() > 0 && ($profile->show_skills ?? true))
                                 <div class="mt-6">
                                     <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">KEAHLIAN</div>
                                     <div class="flex flex-wrap gap-1.5">
