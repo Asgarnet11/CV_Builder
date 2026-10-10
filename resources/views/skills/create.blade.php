@@ -13,7 +13,26 @@
 
                     <div>
                         <x-input-label for="skill_name" :value="__('Nama Keahlian')" />
-                        <x-text-input id="skill_name" name="skill_name" type="text" class="mt-1 block w-full" :value="old('skill_name')" required autofocus placeholder="Contoh: Laravel, Desain Grafis, Public Speaking" />
+                        <x-text-input id="skill_name" name="skill_name" type="text" class="mt-1 block w-full" :value="old('skill_name')" required autofocus placeholder="Contoh: Laravel, Desain Grafis, Public Speaking" list="common_skills" autocomplete="off" />
+                        <datalist id="common_skills">
+                            <option value="Laravel"></option>
+                            <option value="PHP"></option>
+                            <option value="JavaScript"></option>
+                            <option value="Python"></option>
+                            <option value="React"></option>
+                            <option value="Vue.js"></option>
+                            <option value="Node.js"></option>
+                            <option value="Desain Grafis"></option>
+                            <option value="UI/UX Design"></option>
+                            <option value="Figma"></option>
+                            <option value="Adobe Illustrator"></option>
+                            <option value="Public Speaking"></option>
+                            <option value="Project Management"></option>
+                            <option value="Digital Marketing"></option>
+                            <option value="SEO"></option>
+                            <option value="Data Analysis"></option>
+                            <option value="Microsoft Excel"></option>
+                        </datalist>
                         <x-input-error class="mt-2" :messages="$errors->get('skill_name')" />
                     </div>
 
