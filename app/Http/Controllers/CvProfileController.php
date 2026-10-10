@@ -47,6 +47,10 @@ class CvProfileController extends Controller
             $validated
         );
 
+        if ($request->wantsJson()) {
+            return response()->json(['message' => 'Biodata CV berhasil disimpan otomatis.']);
+        }
+
         return redirect()->route('cv-profile.edit')->with('status', 'Biodata CV berhasil disimpan!');
     }
 }

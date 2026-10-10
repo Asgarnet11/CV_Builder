@@ -48,9 +48,52 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('cv-profile.update') }}" enctype="multipart/form-data" class="space-y-6">
+            <form method="POST" action="{{ route('cv-profile.update') }}" enctype="multipart/form-data" class="space-y-6"
+                  x-data="{
+                      saveStatus: '',
+                      timeout: null,
+                      autoSave() {
+                          clearTimeout(this.timeout);
+                          this.saveStatus = 'Menyimpan...';
+                          this.timeout = setTimeout(() => {
+                              let formData = new FormData(this.$el);
+                              fetch(this.$el.action, {
+                                  method: 'POST',
+                                  headers: {
+                                      'X-Requested-With': 'XMLHttpRequest',
+                                      'Accept': 'application/json'
+                                  },
+                                  body: formData
+                              })
+                              .then(response => response.json())
+                              .then(data => {
+                                  this.saveStatus = 'Tersimpan';
+                                  setTimeout(() => this.saveStatus = '', 3000);
+                              })
+                              .catch(error => {
+                                  this.saveStatus = 'Gagal menyimpan';
+                              });
+                          }, 1000);
+                      }
+                  }"
+                  @input="autoSave"
+                  @change="autoSave"
+            >
                 @csrf
                 @method('PUT')
+
+                <!-- Toast Notification -->
+                <div x-show="saveStatus" 
+                     x-transition.opacity.duration.300ms
+                     class="fixed bottom-5 right-5 z-50 bg-gray-900 text-white px-4 py-2 rounded-lg shadow-lg flex items-center space-x-2 text-sm"
+                     style="display: none;">
+                    <svg x-show="saveStatus === 'Menyimpan...'" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <svg x-show="saveStatus === 'Tersimpan'" class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <span x-text="saveStatus"></span>
+                </div>
 
                 <!-- Card 1: Foto Profil & Info Utama -->
                 <div class="bg-white dark:bg-gray-800 shadow-sm border border-gray-100 dark:border-gray-700/60 rounded-2xl p-6 sm:p-8">
