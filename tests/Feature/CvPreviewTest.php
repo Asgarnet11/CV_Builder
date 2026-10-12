@@ -119,4 +119,38 @@ class CvPreviewTest extends TestCase
         $response->assertHeader('content-type', 'application/pdf');
         $this->assertStringContainsString('LaraCV_budi_santoso.pdf', $response->headers->get('content-disposition'));
     }
+
+    /**
+     * Test user can preview CV with English language.
+     */
+    public function test_user_can_preview_cv_in_english(): void
+    {
+        $user = User::factory()->create();
+        CvProfile::factory()->create([
+            'user_id' => $user->id,
+            'full_name' => 'John Doe',
+            'summary' => 'Dedicated developer.',
+        ]);
+
+        $response = $this->actingAs($user)->get('/cv-preview?lang=en');
+        $response->assertStatus(200);
+        $response->assertViewHas('lang', 'en');
+        $response->assertSee('Professional Summary');
+    }
+
+    /**
+     * Test user can download PDF in English.
+     */
+    public function test_user_can_download_pdf_in_english(): void
+    {
+        $user = User::factory()->create(['name' => 'John Doe']);
+        CvProfile::factory()->create([
+            'user_id' => $user->id,
+            'full_name' => 'John Doe',
+        ]);
+
+        $response = $this->actingAs($user)->get('/cv-preview/download?lang=en');
+        $response->assertStatus(200);
+        $response->assertHeader('content-type', 'application/pdf');
+    }
 }

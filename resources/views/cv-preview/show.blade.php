@@ -21,7 +21,7 @@
 
                 @if ($profile && $profile->slug)
                     <div x-data="{ copied: false }" class="relative inline-block">
-                        <button @click="navigator.clipboard.writeText('{{ route('public.cv', ['slug' => $profile->slug, 'template' => $template]) }}'); copied = true; setTimeout(() => copied = false, 2000)" 
+                        <button @click="navigator.clipboard.writeText('{{ route('public.cv', ['slug' => $profile->slug, 'template' => $template, 'lang' => $lang]) }}'); copied = true; setTimeout(() => copied = false, 2000)" 
                                 class="inline-flex items-center px-4 py-2.5 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 text-sm font-semibold rounded-xl transition shadow-sm border border-emerald-200 dark:border-emerald-800">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
@@ -39,7 +39,7 @@
                     {{ __('Cetak / Print') }}
                 </button>
 
-                <a href="{{ route('cv-preview.download', ['template' => $template]) }}" class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition">
+                <a href="{{ route('cv-preview.download', ['template' => $template, 'lang' => $lang]) }}" class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                     </svg>
@@ -52,24 +52,38 @@
     <div class="py-10 bg-slate-100 dark:bg-slate-900 min-h-screen">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
-            <!-- Template Switcher Bar -->
-            <div class="print:hidden bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Pilihan Tema Template:</span>
+            <!-- Template & Language Switcher Bar -->
+            <div class="print:hidden bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex flex-wrap items-center gap-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Pilihan Tema:</span>
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('cv-preview.show', ['template' => 'modern', 'lang' => $lang]) }}" 
+                           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition {{ $template === 'modern' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200' }}">
+                            Modern Indigo
+                        </a>
+                        <a href="{{ route('cv-preview.show', ['template' => 'classic', 'lang' => $lang]) }}" 
+                           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition {{ $template === 'classic' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200' }}">
+                            Classic Executive
+                        </a>
+                        <a href="{{ route('cv-preview.show', ['template' => 'minimal', 'lang' => $lang]) }}" 
+                           class="px-3.5 py-1.5 rounded-xl text-xs font-bold transition {{ $template === 'minimal' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200' }}">
+                            Minimalist Clean
+                        </a>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('cv-preview.show', ['template' => 'modern']) }}" 
-                       class="px-4 py-2 rounded-xl text-xs font-bold transition {{ $template === 'modern' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200' }}">
-                        Modern Indigo
-                    </a>
-                    <a href="{{ route('cv-preview.show', ['template' => 'classic']) }}" 
-                       class="px-4 py-2 rounded-xl text-xs font-bold transition {{ $template === 'classic' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200' }}">
-                        Classic Executive
-                    </a>
-                    <a href="{{ route('cv-preview.show', ['template' => 'minimal']) }}" 
-                       class="px-4 py-2 rounded-xl text-xs font-bold transition {{ $template === 'minimal' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200' }}">
-                        Minimalist Clean
-                    </a>
+
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Bahasa CV:</span>
+                    <div class="flex items-center bg-gray-100 dark:bg-gray-700 p-1 rounded-xl">
+                        <a href="{{ route('cv-preview.show', ['template' => $template, 'lang' => 'id']) }}" 
+                           class="px-3 py-1 rounded-lg text-xs font-bold transition {{ $lang === 'id' ? 'bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900' }}">
+                            🇮🇩 Indonesia
+                        </a>
+                        <a href="{{ route('cv-preview.show', ['template' => $template, 'lang' => 'en']) }}" 
+                           class="px-3 py-1 rounded-lg text-xs font-bold transition {{ $lang === 'en' ? 'bg-white dark:bg-gray-800 text-indigo-600 dark:text-indigo-400 shadow-sm' : 'text-gray-600 dark:text-gray-300 hover:text-gray-900' }}">
+                            🇬🇧 English
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -145,6 +159,12 @@
                                                 LinkedIn
                                             </a>
                                         @endif
+                                        @if ($profile?->github_url)
+                                            <a href="{{ $profile->github_url }}" target="_blank" class="inline-flex items-center gap-1 hover:underline">
+                                                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+                                                GitHub
+                                            </a>
+                                        @endif
                                         @if ($profile?->portfolio_url)
                                             <a href="{{ $profile->portfolio_url }}" target="_blank" class="inline-flex items-center gap-1 hover:underline">
                                                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
@@ -169,7 +189,7 @@
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900 border-b border-indigo-100 pb-1.5 mb-2.5 flex items-center gap-1.5">
                                         <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                                        {{ __('Ringkasan Profesional') }}
+                                        {{ $labels['summary_title'] }}
                                     </h3>
                                     <p class="text-xs sm:text-sm text-slate-700 leading-relaxed text-justify">
                                         {{ $profile->summary }}
@@ -182,7 +202,7 @@
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 flex items-center gap-1.5">
                                         <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                                        {{ __('Pengalaman Kerja & Organisasi') }}
+                                        {{ $labels['experience_title'] }}
                                     </h3>
                                     <div class="space-y-4">
                                         @foreach ($experiences as $exp)
@@ -191,7 +211,7 @@
                                                     <h4 class="text-sm font-bold text-slate-900">{{ $exp->position }}</h4>
                                                     <span class="text-xs font-medium text-slate-500">
                                                         {{ \Carbon\Carbon::parse($exp->start_date)->translatedFormat('M Y') }} - 
-                                                        {{ $exp->is_current ? 'Sekarang' : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->translatedFormat('M Y') : '-') }}
+                                                        {{ $exp->is_current ? $labels['present'] : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->translatedFormat('M Y') : '-') }}
                                                     </span>
                                                 </div>
                                                 <div class="text-xs font-semibold text-indigo-600">{{ $exp->company_name }}</div>
@@ -209,14 +229,14 @@
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 flex items-center gap-1.5">
                                         <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                                        {{ __('Riwayat Pendidikan') }}
+                                        {{ $labels['education_title'] }}
                                     </h3>
                                     <div class="space-y-3">
                                         @foreach ($education as $edu)
                                             <div class="relative pl-4 border-l-2 border-indigo-200">
                                                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                                                     <h4 class="text-sm font-bold text-slate-900">{{ $edu->institution }}</h4>
-                                                    <span class="text-xs font-medium text-slate-500">{{ $edu->start_year }} - {{ $edu->end_year ?? 'Sekarang' }}</span>
+                                                    <span class="text-xs font-medium text-slate-500">{{ $edu->start_year }} - {{ $edu->end_year ?? $labels['present'] }}</span>
                                                 </div>
                                                 <div class="text-xs font-semibold text-indigo-600">{{ $edu->degree }}</div>
                                                 @if ($edu->description)
@@ -233,7 +253,7 @@
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 flex items-center gap-1.5">
                                         <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                                        {{ __('Keahlian & Kompetensi Teknis') }}
+                                        {{ $labels['skills_title'] }}
                                     </h3>
                                     <div class="flex flex-wrap gap-2">
                                         @foreach ($skills as $skill)
@@ -264,11 +284,11 @@
                                     @if ($profile?->phone) <span>|</span> <span>{{ $profile->phone }}</span> @endif
                                     @if ($profile?->address) <span>|</span> <span>{{ $profile->address }}</span> @endif
                                 </div>
-                                @if ($profile?->linkedin_url || $profile?->portfolio_url)
+                                @if ($profile?->linkedin_url || $profile?->github_url || $profile?->portfolio_url)
                                     <div class="text-xs text-slate-600 mt-1 space-x-2">
                                         @if ($profile?->linkedin_url) <a href="{{ $profile->linkedin_url }}" target="_blank" class="hover:underline text-slate-800 font-medium">LinkedIn</a> @endif
-                                        @if ($profile?->linkedin_url && $profile?->portfolio_url) <span>|</span> @endif
-                                        @if ($profile?->portfolio_url) <a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline text-slate-800 font-medium">Portofolio</a> @endif
+                                        @if ($profile?->github_url) <span>|</span> <a href="{{ $profile->github_url }}" target="_blank" class="hover:underline text-slate-800 font-medium">GitHub</a> @endif
+                                        @if ($profile?->portfolio_url) <span>|</span> <a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline text-slate-800 font-medium">Portofolio</a> @endif
                                     </div>
                                 @endif
                             </div>
@@ -276,16 +296,16 @@
                             @if ($profile?->summary)
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800 border-b border-slate-300 pb-1 mb-2">
-                                        PROFIL SINGKAT
+                                        {{ strtoupper($labels['summary_title']) }}
                                     </h3>
                                     <p class="text-xs text-slate-700 leading-relaxed text-justify">{{ $profile->summary }}</p>
                                 </div>
                             @endif
 
-                            @if ($experiences->count() > 0)
+                            @if ($experiences->count() > 0 && ($profile->show_experience ?? true))
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800 border-b border-slate-300 pb-1 mb-3">
-                                        PENGALAMAN KERJA
+                                        {{ strtoupper($labels['experience_title']) }}
                                     </h3>
                                     <div class="space-y-3">
                                         @foreach ($experiences as $exp)
@@ -294,7 +314,7 @@
                                                     <span>{{ $exp->position }} - <span class="font-normal italic">{{ $exp->company_name }}</span></span>
                                                     <span class="font-normal text-slate-600">
                                                         {{ \Carbon\Carbon::parse($exp->start_date)->translatedFormat('M Y') }} - 
-                                                        {{ $exp->is_current ? 'Sekarang' : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->translatedFormat('M Y') : '-') }}
+                                                        {{ $exp->is_current ? $labels['present'] : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->translatedFormat('M Y') : '-') }}
                                                     </span>
                                                 </div>
                                                 @if ($exp->description)
@@ -306,10 +326,10 @@
                                 </div>
                             @endif
 
-                            @if ($education->count() > 0)
+                            @if ($education->count() > 0 && ($profile->show_education ?? true))
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800 border-b border-slate-300 pb-1 mb-3">
-                                        PENDIDIKAN
+                                        {{ strtoupper($labels['education_title']) }}
                                     </h3>
                                     <div class="space-y-2">
                                         @foreach ($education as $edu)
@@ -318,7 +338,7 @@
                                                     <span class="font-bold text-slate-900">{{ $edu->institution }}</span>
                                                     <div class="text-slate-600">{{ $edu->degree }}</div>
                                                 </div>
-                                                <span class="text-slate-600 font-medium">{{ $edu->start_year }} - {{ $edu->end_year ?? 'Sekarang' }}</span>
+                                                <span class="text-slate-600 font-medium">{{ $edu->start_year }} - {{ $edu->end_year ?? $labels['present'] }}</span>
                                             </div>
                                         @endforeach
                                     </div>
@@ -328,7 +348,7 @@
                             @if ($skills->count() > 0 && ($profile->show_skills ?? true))
                                 <div class="mt-6">
                                     <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800 border-b border-slate-300 pb-1 mb-2">
-                                        KEAHLIAN
+                                        {{ strtoupper($labels['skills_title']) }}
                                     </h3>
                                     <p class="text-xs text-slate-700">
                                         {{ $skills->map(fn($s) => $s->skill_name . ' (' . $s->level . ')')->join(', ') }}
@@ -354,20 +374,21 @@
                                     @if ($profile?->phone) <div>{{ $profile->phone }}</div> @endif
                                     @if ($profile?->address) <div>{{ $profile->address }}</div> @endif
                                     @if ($profile?->linkedin_url) <div><a href="{{ $profile->linkedin_url }}" target="_blank" class="hover:underline">LinkedIn</a></div> @endif
+                                    @if ($profile?->github_url) <div><a href="{{ $profile->github_url }}" target="_blank" class="hover:underline">GitHub</a></div> @endif
                                     @if ($profile?->portfolio_url) <div><a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline">Portofolio</a></div> @endif
                                 </div>
                             </div>
 
                             @if ($profile?->summary)
                                 <div class="mt-6">
-                                    <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">TENTANG</div>
+                                    <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">{{ strtoupper($labels['summary_title']) }}</div>
                                     <p class="text-xs text-slate-800 leading-relaxed">{{ $profile->summary }}</p>
                                 </div>
                             @endif
 
-                            @if ($experiences->count() > 0)
+                            @if ($experiences->count() > 0 && ($profile->show_experience ?? true))
                                 <div class="mt-6">
-                                    <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">PENGALAMAN</div>
+                                    <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">{{ strtoupper($labels['experience_title']) }}</div>
                                     <div class="space-y-4">
                                         @foreach ($experiences as $exp)
                                             <div>
@@ -375,7 +396,7 @@
                                                     <span>{{ $exp->position }} &bull; <span class="text-slate-500 font-normal">{{ $exp->company_name }}</span></span>
                                                     <span class="text-slate-400 font-mono text-[11px]">
                                                         {{ \Carbon\Carbon::parse($exp->start_date)->format('Y') }} - 
-                                                        {{ $exp->is_current ? 'Present' : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->format('Y') : '-') }}
+                                                        {{ $exp->is_current ? $labels['present'] : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->format('Y') : '-') }}
                                                     </span>
                                                 </div>
                                                 @if ($exp->description)
@@ -387,14 +408,14 @@
                                 </div>
                             @endif
 
-                            @if ($education->count() > 0)
+                            @if ($education->count() > 0 && ($profile->show_education ?? true))
                                 <div class="mt-6">
-                                    <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">PENDIDIKAN</div>
+                                    <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">{{ strtoupper($labels['education_title']) }}</div>
                                     <div class="space-y-2">
                                         @foreach ($education as $edu)
                                             <div class="flex justify-between text-xs">
                                                 <span><strong class="font-bold">{{ $edu->institution }}</strong> &bull; {{ $edu->degree }}</span>
-                                                <span class="text-slate-400 font-mono text-[11px]">{{ $edu->start_year }} - {{ $edu->end_year ?? 'Present' }}</span>
+                                                <span class="text-slate-400 font-mono text-[11px]">{{ $edu->start_year }} - {{ $edu->end_year ?? $labels['present'] }}</span>
                                             </div>
                                         @endforeach
                                     </div>
@@ -403,7 +424,7 @@
 
                             @if ($skills->count() > 0 && ($profile->show_skills ?? true))
                                 <div class="mt-6">
-                                    <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">KEAHLIAN</div>
+                                    <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">{{ strtoupper($labels['skills_title']) }}</div>
                                     <div class="flex flex-wrap gap-1.5">
                                         @foreach ($skills as $skill)
                                             <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-xs font-medium">

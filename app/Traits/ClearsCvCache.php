@@ -31,6 +31,9 @@ trait ClearsCvCache
         if ($slug) {
             foreach (['modern', 'classic', 'minimal'] as $t) {
                 Cache::forget("cv_public_{$slug}_{$t}");
+                foreach (['id', 'en'] as $l) {
+                    Cache::forget("cv_public_{$slug}_{$t}_{$l}");
+                }
             }
         }
     }

@@ -326,15 +326,28 @@
                             <x-input-error class="mt-2" :messages="$errors->get('linkedin_url')" />
                         </div>
 
+                        <!-- GitHub URL -->
+                        <div>
+                            <x-input-label for="github_url" :value="__('Tautan GitHub')" />
+                            <x-text-input id="github_url" 
+                                          name="github_url" 
+                                          type="url" 
+                                          class="mt-1 block w-full rounded-xl" 
+                                          :value="old('github_url', $profile?->github_url ?? '')" 
+                                          placeholder="https://github.com/username" />
+                            <x-input-error class="mt-2" :messages="$errors->get('github_url')" />
+                        </div>
+
                         <!-- Portfolio URL -->
                         <div>
-                            <x-input-label for="portfolio_url" :value="__('Tautan Portofolio / GitHub / Website')" />
+                            <x-input-label for="portfolio_url" :value="__('Tautan Portofolio / Website')" />
                             <x-text-input id="portfolio_url" 
                                           name="portfolio_url" 
                                           type="url" 
                                           class="mt-1 block w-full rounded-xl" 
                                           :value="old('portfolio_url', $profile?->portfolio_url ?? '')" 
                                           placeholder="https://budisantoso.dev" />
+                            <x-input-error class="mt-2" :messages="$errors->get('portfolio_url')" />
                         </div>
 
                         <div>

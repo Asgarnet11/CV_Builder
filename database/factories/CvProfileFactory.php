@@ -28,6 +28,7 @@ class CvProfileFactory extends Factory
             'address' => fake()->address(),
             'summary' => fake()->paragraph(),
             'linkedin_url' => 'https://linkedin.com/in/'.fake()->userName(),
+            'github_url' => 'https://github.com/'.fake()->userName(),
             'portfolio_url' => fake()->url(),
         ];
     }

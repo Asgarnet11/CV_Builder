@@ -107,14 +107,36 @@ class PublicCvTest extends TestCase
         ]);
 
         // First hit caches it
-        $this->get('/cv/eko-kurniawan?template=modern')->assertStatus(200);
-        $this->assertTrue(Cache::has('cv_public_eko-kurniawan_modern'));
+        $this->get('/cv/eko-kurniawan?template=modern&lang=id')->assertStatus(200);
+        $this->assertTrue(Cache::has('cv_public_eko-kurniawan_modern_id'));
 
         // Update profile - ClearsCvCache trait should invalidate cache
         $profile->update([
             'headline' => 'Senior Software Architect',
         ]);
 
-        $this->assertFalse(Cache::has('cv_public_eko-kurniawan_modern'));
+        $this->assertFalse(Cache::has('cv_public_eko-kurniawan_modern_id'));
+    }
+
+    /**
+     * Test public CV renders English and Indonesian section labels.
+     */
+    public function test_public_cv_supports_multi_language_labels(): void
+    {
+        $user = User::factory()->create();
+        $profile = CvProfile::factory()->create([
+            'user_id' => $user->id,
+            'full_name' => 'Fajar Nugraha',
+            'slug' => 'fajar-nugraha',
+            'summary' => 'Ringkasan karir.',
+        ]);
+
+        $responseId = $this->get('/cv/fajar-nugraha?lang=id');
+        $responseId->assertStatus(200);
+        $responseId->assertSee('Ringkasan Profesional');
+
+        $responseEn = $this->get('/cv/fajar-nugraha?lang=en');
+        $responseEn->assertStatus(200);
+        $responseEn->assertSee('Professional Summary');
     }
 }

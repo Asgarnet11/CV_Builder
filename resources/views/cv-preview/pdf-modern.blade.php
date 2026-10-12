@@ -196,6 +196,9 @@
                     @if ($profile?->linkedin_url)
                         <span>LinkedIn: {{ $profile->linkedin_url }}</span>
                     @endif
+                    @if ($profile?->github_url)
+                        <span> &bull; GitHub: {{ $profile->github_url }}</span>
+                    @endif
                     @if ($profile?->portfolio_url)
                         <span> &bull; Portfolio: {{ $profile->portfolio_url }}</span>
                     @endif
@@ -211,20 +214,20 @@
 
     <!-- Ringkasan Profesional -->
     @if ($profile?->summary)
-        <div class="section-title"><span>■</span> Ringkasan Profesional</div>
+        <div class="section-title"><span>■</span> {{ $labels['summary_title'] ?? 'Ringkasan Profesional' }}</div>
         <p class="summary-text">{{ $profile->summary }}</p>
     @endif
 
     <!-- Pengalaman Kerja -->
     @if ($experiences->count() > 0 && ($profile->show_experience ?? true))
-        <div class="section-title"><span>■</span> Pengalaman Kerja</div>
+        <div class="section-title"><span>■</span> {{ $labels['experience_title'] ?? 'Pengalaman Kerja' }}</div>
         @foreach ($experiences as $exp)
             <table class="item-table">
                 <tr>
                     <td class="item-header-left">{{ $exp->position }}</td>
                     <td class="item-header-right">
                         {{ \Carbon\Carbon::parse($exp->start_date)->translatedFormat('M Y') }} - 
-                        {{ $exp->is_current ? 'Sekarang' : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->translatedFormat('M Y') : '-') }}
+                        {{ $exp->is_current ? ($labels['present'] ?? 'Sekarang') : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->translatedFormat('M Y') : '-') }}
                     </td>
                 </tr>
                 <tr>
@@ -241,13 +244,13 @@
 
     <!-- Riwayat Pendidikan -->
     @if ($education->count() > 0 && ($profile->show_education ?? true))
-        <div class="section-title"><span>■</span> Riwayat Pendidikan</div>
+        <div class="section-title"><span>■</span> {{ $labels['education_title'] ?? 'Riwayat Pendidikan' }}</div>
         @foreach ($education as $edu)
             <table class="item-table">
                 <tr>
                     <td class="item-header-left">{{ $edu->institution }}</td>
                     <td class="item-header-right">
-                        {{ $edu->start_year }} - {{ $edu->end_year ?? 'Sekarang' }}
+                        {{ $edu->start_year }} - {{ $edu->end_year ?? ($labels['present'] ?? 'Sekarang') }}
                     </td>
                 </tr>
                 <tr>
@@ -264,7 +267,7 @@
 
     <!-- Keterampilan / Skills -->
     @if ($skills->count() > 0 && ($profile->show_skills ?? true))
-        <div class="section-title"><span>■</span> Keahlian & Kompetensi</div>
+        <div class="section-title"><span>■</span> {{ $labels['skills_title'] ?? 'Keahlian & Kompetensi' }}</div>
         <div style="margin-top: 4px;">
             @foreach ($skills as $skill)
                 <span class="skill-cell">
