@@ -65,7 +65,7 @@ class CvProfileController extends Controller
         ]);
 
         $user = $request->user();
-        $profile = $user->cvProfile ?? $user->cvProfile()->create();
+        $profile = $user->cvProfile ?? $user->cvProfile()->create(['full_name' => $user->name]);
 
         try {
             $image_parts = explode(';base64,', $request->photo_base64);
