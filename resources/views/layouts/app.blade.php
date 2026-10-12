@@ -7,21 +7,37 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <!-- Google Fonts: Plus Jakarta Sans & Outfit -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         @stack('styles')
+        <style>
+            body {
+                font-family: 'Plus Jakarta Sans', sans-serif;
+            }
+            h1, h2, h3, h4, .font-heading {
+                font-family: 'Outfit', sans-serif;
+            }
+        </style>
     </head>
-    <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <body class="font-sans antialiased text-slate-800 dark:text-slate-100 bg-slate-50 dark:bg-slate-950 selection:bg-indigo-500 selection:text-white relative">
+        <!-- Background Ambient Glow -->
+        <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+            <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[65rem] h-[30rem] bg-gradient-to-tr from-indigo-500/10 via-violet-500/10 to-sky-400/5 blur-[120px] rounded-full"></div>
+            <div class="absolute top-[35rem] -left-20 w-[40rem] h-[30rem] bg-indigo-500/5 dark:bg-indigo-900/10 blur-[130px] rounded-full"></div>
+            <div class="absolute top-[60rem] -right-20 w-[40rem] h-[30rem] bg-violet-500/5 dark:bg-violet-900/10 blur-[130px] rounded-full"></div>
+        </div>
+
+        <div class="min-h-screen flex flex-col">
             @include('layouts.navigation')
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
+                <header class="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/60 dark:border-slate-800/60">
                     <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                         {{ $header }}
                     </div>

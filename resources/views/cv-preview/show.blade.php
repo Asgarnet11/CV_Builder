@@ -2,18 +2,22 @@
     <x-slot name="header">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <h2 class="font-bold text-2xl text-gray-800 dark:text-gray-100 leading-tight">
-                    {{ __('Pratinjau CV (Live Preview)') }}
+                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/50 dark:border-indigo-800/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold tracking-wide uppercase mb-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    Live Document Studio
+                </div>
+                <h2 class="font-extrabold text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
+                    {{ __('Pratinjau CV & Ekspor Dokumen') }}
                 </h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                    {{ __('Lihat tampilan dokumen CV Anda secara real-time, pilih tema desain, dan ekspor ke PDF.') }}
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                    {{ __('Lihat render dokumen CV secara instan, pilih template terbaik, dan ekspor ke format pilihan.') }}
                 </p>
             </div>
 
             <!-- Action Buttons Toolbar -->
-            <div class="flex flex-wrap items-center gap-3">
-                <a href="{{ route('cv-profile.edit') }}" class="inline-flex items-center px-4 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm font-semibold rounded-xl transition">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex flex-wrap items-center gap-2.5">
+                <a href="{{ route('cv-profile.edit') }}" class="inline-flex items-center px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                     </svg>
                     {{ __('Edit Biodata') }}
@@ -22,32 +26,32 @@
                 @if ($profile && $profile->slug)
                     <div x-data="{ copied: false }" class="relative inline-block">
                         <button @click="navigator.clipboard.writeText('{{ route('public.cv', ['slug' => $profile->slug, 'template' => $template]) }}'); copied = true; setTimeout(() => copied = false, 2000)" 
-                                class="inline-flex items-center px-4 py-2.5 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 text-sm font-semibold rounded-xl transition shadow-sm border border-emerald-200 dark:border-emerald-800">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                class="inline-flex items-center px-4 py-2.5 bg-emerald-50 dark:bg-emerald-950/60 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 text-xs font-bold rounded-xl transition shadow-xs border border-emerald-200 dark:border-emerald-800">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
                             </svg>
-                            <span x-show="!copied">Link Publik</span>
+                            <span x-show="!copied">Tautan Publik</span>
                             <span x-show="copied">Tersalin!</span>
                         </button>
                     </div>
                 @endif
 
-                <button onclick="window.print()" class="inline-flex items-center px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-white text-sm font-semibold rounded-xl transition shadow-sm">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <button onclick="window.print()" class="inline-flex items-center px-4 py-2.5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition shadow-xs">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                     </svg>
-                    {{ __('Cetak / Print') }}
+                    {{ __('Cetak') }}
                 </button>
 
                 <div x-data="{ openExportMenu: false }" class="relative inline-block text-left">
-                    <div class="inline-flex rounded-xl shadow-lg shadow-indigo-500/20">
-                        <a href="{{ route('cv-preview.download', ['template' => $template]) }}" class="inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-bold rounded-l-xl transition">
-                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="inline-flex rounded-xl shadow-md shadow-indigo-500/20">
+                        <a href="{{ route('cv-preview.download', ['template' => $template]) }}" class="inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-xs font-bold rounded-l-xl transition">
+                            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                             </svg>
                             {{ __('Unduh PDF') }}
                         </a>
-                        <button type="button" @click="openExportMenu = !openExportMenu" class="px-3 py-2.5 bg-indigo-700 hover:bg-indigo-800 text-white text-sm font-bold rounded-r-xl border-l border-indigo-500/40 transition focus:outline-none" title="Pilihan Format Lain">
+                        <button type="button" @click="openExportMenu = !openExportMenu" class="px-2.5 py-2.5 bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-bold rounded-r-xl border-l border-indigo-500/40 transition focus:outline-none" title="Pilihan Format Lain">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
@@ -57,26 +61,26 @@
                     <div x-show="openExportMenu" 
                          @click.away="openExportMenu = false" 
                          style="display: none;" 
-                         class="origin-top-right absolute right-0 mt-2 w-64 rounded-2xl shadow-xl bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 dark:divide-gray-700 z-50 overflow-hidden"
+                         class="origin-top-right absolute right-0 mt-2 w-64 rounded-2xl shadow-2xl bg-white dark:bg-slate-800 ring-1 ring-black/5 divide-y divide-slate-100 dark:divide-slate-700 z-50 overflow-hidden"
                          x-transition:enter="transition ease-out duration-100"
                          x-transition:enter-start="transform opacity-0 scale-95"
                          x-transition:enter-end="transform opacity-100 scale-100"
                          x-transition:leave="transition ease-in duration-75"
                          x-transition:leave-start="transform opacity-100 scale-100"
                          x-transition:leave-end="transform opacity-0 scale-95">
-                        <div class="py-1">
-                            <a href="{{ route('cv-preview.download-word') }}" class="flex items-center px-4 py-3 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 transition">
-                                <span class="mr-3 text-lg">📄</span>
+                        <div class="py-1.5">
+                            <a href="{{ route('cv-preview.download-word') }}" class="flex items-center px-4 py-3 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 transition">
+                                <span class="mr-3 text-xl">📄</span>
                                 <div>
-                                    <div class="font-bold text-gray-900 dark:text-gray-100">Microsoft Word (.doc)</div>
-                                    <div class="text-[11px] text-gray-500 font-normal">Format dokumen yang dapat diedit</div>
+                                    <div class="font-bold text-slate-900 dark:text-white">Microsoft Word (.doc)</div>
+                                    <div class="text-[10px] text-slate-400 font-normal">Format dokumen yang dapat disunting</div>
                                 </div>
                             </a>
-                            <a href="{{ route('cv-preview.download-json') }}" class="flex items-center px-4 py-3 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 transition">
-                                <span class="mr-3 text-lg">📋</span>
+                            <a href="{{ route('cv-preview.download-json') }}" class="flex items-center px-4 py-3 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 transition">
+                                <span class="mr-3 text-xl">📋</span>
                                 <div>
-                                    <div class="font-bold text-gray-900 dark:text-gray-100">JSON Resume (.json)</div>
-                                    <div class="text-[11px] text-gray-500 font-normal">Format data standar portabel</div>
+                                    <div class="font-bold text-slate-900 dark:text-white">JSON Resume (.json)</div>
+                                    <div class="text-[10px] text-slate-400 font-normal">Format data standar portabel</div>
                                 </div>
                             </a>
                         </div>
@@ -86,30 +90,36 @@
         </div>
     </x-slot>
 
-    <div class="py-10 bg-slate-100 dark:bg-slate-900 min-h-screen">
-        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="py-8 sm:py-10 bg-slate-100/80 dark:bg-slate-950 min-h-screen relative" x-data="{ zoomScale: 100 }">
+        <!-- Studio Background Grid -->
+        <div class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none"></div>
+
+        <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
             <!-- Guided Workflow Stepper -->
             <div class="print:hidden">
                 <x-cv-wizard-stepper current="preview" />
             </div>
 
-            <!-- Template Switcher Bar -->
-            <div class="print:hidden bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <!-- Template Switcher & Canvas Controls Bar -->
+            <div class="print:hidden bg-white/95 dark:bg-slate-800/95 backdrop-blur-md p-4 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Pilihan Tema Template:</span>
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                        <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path></svg>
+                        Pilihan Desain Template:
+                    </span>
                 </div>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 flex-wrap">
                     <a href="{{ route('cv-preview.show', ['template' => 'modern']) }}" 
-                       class="px-4 py-2 rounded-xl text-xs font-bold transition {{ $template === 'modern' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200' }}">
+                       class="px-4 py-2 rounded-xl text-xs font-bold transition {{ $template === 'modern' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25' : 'bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                         Modern Indigo
                     </a>
                     <a href="{{ route('cv-preview.show', ['template' => 'classic']) }}" 
-                       class="px-4 py-2 rounded-xl text-xs font-bold transition {{ $template === 'classic' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200' }}">
+                       class="px-4 py-2 rounded-xl text-xs font-bold transition {{ $template === 'classic' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25' : 'bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                         Classic Executive
                     </a>
                     <a href="{{ route('cv-preview.show', ['template' => 'minimal']) }}" 
-                       class="px-4 py-2 rounded-xl text-xs font-bold transition {{ $template === 'minimal' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/20' : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200' }}">
+                       class="px-4 py-2 rounded-xl text-xs font-bold transition {{ $template === 'minimal' ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25' : 'bg-slate-100 dark:bg-slate-700/60 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700' }}">
                         Minimalist Clean
                     </a>
                 </div>
@@ -124,14 +134,14 @@
                         </svg>
                         <span class="text-xs sm:text-sm font-medium">Biodata profil Anda masih menggunakan nilai default akun. Lengkapi biodata untuk hasil CV yang optimal.</span>
                     </div>
-                    <a href="{{ route('cv-profile.edit') }}" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shrink-0 ml-4">
+                    <a href="{{ route('cv-profile.edit') }}" class="px-3.5 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shrink-0 ml-4">
                         Isi Biodata
                     </a>
                 </div>
             @endif
 
-            <!-- Paper Container (A4 Simulation) -->
-            <div class="flex justify-center">
+            <!-- Paper Container (A4 Physical Sheet Simulation) -->
+            <div class="flex justify-center transition-transform duration-200 overflow-x-auto py-2">
                 @php
                     $accent = $profile?->theme_color ?? '#4f46e5';
                 @endphp
@@ -139,9 +149,9 @@
                     #cv-paper .text-indigo-600, #cv-paper .text-indigo-500, #cv-paper .text-indigo-900 { color: {{ $accent }} !important; }
                     #cv-paper .bg-indigo-600, #cv-paper .bg-indigo-500 { background-color: {{ $accent }} !important; }
                     #cv-paper .border-indigo-600, #cv-paper .border-indigo-200, #cv-paper .border-indigo-100 { border-color: {{ $accent }} !important; }
-                    #cv-paper .bg-indigo-50 { background-color: {{ $accent }}20 !important; } /* 20 is hex opacity */
+                    #cv-paper .bg-indigo-50 { background-color: {{ $accent }}20 !important; }
                 </style>
-                <div id="cv-paper" class="w-full max-w-[210mm] min-h-[297mm] bg-white text-slate-900 p-8 sm:p-12 shadow-2xl rounded-sm border border-gray-200 transition-all font-sans">
+                <div id="cv-paper" class="w-full max-w-[210mm] min-h-[297mm] bg-white text-slate-900 p-8 sm:p-12 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.25)] rounded-sm border border-slate-200 transition-all font-sans">
 
                     @if ($template === 'modern')
                         <!-- ================= MODERN INDIGO TEMPLATE ================= -->

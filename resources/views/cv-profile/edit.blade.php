@@ -1,20 +1,26 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <h2 class="font-bold text-2xl text-gray-800 dark:text-gray-100 leading-tight">
-                    {{ __('Biodata CV') }}
+                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/50 dark:border-indigo-800/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold tracking-wide uppercase mb-1">
+                    <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                    Profil Personal & Kontak
+                </div>
+                <h2 class="font-extrabold text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
+                    {{ __('Kelola Biodata CV') }}
                 </h2>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                     {{ __('Kelola profil personal, kontak publik, dan berkas foto resmi Anda untuk dokumen CV.') }}
                 </p>
             </div>
-            <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 text-sm font-medium rounded-lg transition duration-150 ease-in-out">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
-                {{ __('Kembali ke Dashboard') }}
-            </a>
+            <div class="flex items-center gap-3">
+                <a href="{{ route('dashboard') }}" class="inline-flex items-center px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    {{ __('Dashboard') }}
+                </a>
+            </div>
         </div>
     </x-slot>
 

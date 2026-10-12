@@ -5,29 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>CV - {{ $profile?->full_name ?? $user->name }}</title>
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700,800,900&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased bg-slate-100 min-h-screen py-10">
+<body class="font-sans antialiased bg-slate-100 text-slate-900 min-h-screen py-8 sm:py-12 relative selection:bg-indigo-500 selection:text-white">
+    <!-- Ambient Background Grid -->
+    <div class="fixed inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none z-0"></div>
 
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
-        <!-- Action Bar -->
-        <div class="print:hidden bg-white p-4 rounded-2xl shadow-sm border border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div class="flex items-center gap-2 text-sm text-gray-500 font-medium">
-                CV Daring: <strong class="text-gray-900">{{ $profile?->full_name ?? $user->name }}</strong>
-            </div>
+        <!-- Public Action Bar -->
+        <div class="print:hidden bg-white/90 backdrop-blur-xl p-4 sm:p-5 rounded-3xl shadow-sm border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div class="flex items-center gap-3">
-                <button onclick="window.print()" class="inline-flex items-center px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-semibold rounded-xl transition shadow-sm">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center font-bold text-sm shadow-md shadow-indigo-500/20">
+                    CV
+                </div>
+                <div>
+                    <div class="text-[10px] font-bold uppercase tracking-wider text-indigo-600">Dokumen Publik Daring</div>
+                    <div class="text-base font-extrabold text-slate-900 leading-tight">{{ $profile?->full_name ?? $user->name }}</div>
+                </div>
+            </div>
+            <div class="flex items-center gap-2.5">
+                <button onclick="window.print()" class="inline-flex items-center px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition shadow-xs">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                     </svg>
-                    Cetak
+                    Cetak / Simpan PDF
                 </button>
                 @auth
                     @if(auth()->id() === $user->id)
-                        <a href="{{ route('cv-preview.show', ['template' => $template]) }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition shadow-sm">
+                        <a href="{{ route('cv-preview.show', ['template' => $template]) }}" class="inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 text-white text-xs font-bold rounded-xl transition shadow-md shadow-indigo-500/20">
                             Edit CV Saya
                         </a>
                     @endif
@@ -36,7 +45,7 @@
         </div>
 
         <!-- The CV Paper -->
-        <div class="flex justify-center">
+        <div class="flex justify-center py-2 overflow-x-auto">
             @php
                 $accent = $profile?->theme_color ?? '#4f46e5';
             @endphp
@@ -46,7 +55,7 @@
                 #cv-paper .border-indigo-600, #cv-paper .border-indigo-200, #cv-paper .border-indigo-100 { border-color: {{ $accent }} !important; }
                 #cv-paper .bg-indigo-50 { background-color: {{ $accent }}20 !important; }
             </style>
-            <div id="cv-paper" class="w-full max-w-[210mm] min-h-[297mm] bg-white text-slate-900 p-8 sm:p-12 shadow-2xl rounded-sm border border-gray-200 transition-all">
+            <div id="cv-paper" class="w-full max-w-[210mm] min-h-[297mm] bg-white text-slate-900 p-8 sm:p-12 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.25)] rounded-sm border border-slate-200 transition-all font-sans">
 
                 @if ($template === 'modern')
                     <!-- ================= MODERN INDIGO TEMPLATE ================= -->
