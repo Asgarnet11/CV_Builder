@@ -39,12 +39,49 @@
                     {{ __('Cetak / Print') }}
                 </button>
 
-                <a href="{{ route('cv-preview.download', ['template' => $template]) }}" class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                    </svg>
-                    {{ __('Unduh Berkas PDF') }}
-                </a>
+                <div x-data="{ openExportMenu: false }" class="relative inline-block text-left">
+                    <div class="inline-flex rounded-xl shadow-lg shadow-indigo-500/20">
+                        <a href="{{ route('cv-preview.download', ['template' => $template]) }}" class="inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white text-sm font-bold rounded-l-xl transition">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            {{ __('Unduh PDF') }}
+                        </a>
+                        <button type="button" @click="openExportMenu = !openExportMenu" class="px-3 py-2.5 bg-indigo-700 hover:bg-indigo-800 text-white text-sm font-bold rounded-r-xl border-l border-indigo-500/40 transition focus:outline-none" title="Pilihan Format Lain">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div x-show="openExportMenu" 
+                         @click.away="openExportMenu = false" 
+                         style="display: none;" 
+                         class="origin-top-right absolute right-0 mt-2 w-64 rounded-2xl shadow-xl bg-white dark:bg-gray-800 ring-1 ring-black ring-opacity-5 divide-y divide-gray-100 dark:divide-gray-700 z-50 overflow-hidden"
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="transform opacity-0 scale-95"
+                         x-transition:enter-end="transform opacity-100 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="transform opacity-100 scale-100"
+                         x-transition:leave-end="transform opacity-0 scale-95">
+                        <div class="py-1">
+                            <a href="{{ route('cv-preview.download-word') }}" class="flex items-center px-4 py-3 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 transition">
+                                <span class="mr-3 text-lg">📄</span>
+                                <div>
+                                    <div class="font-bold text-gray-900 dark:text-gray-100">Microsoft Word (.doc)</div>
+                                    <div class="text-[11px] text-gray-500 font-normal">Format dokumen yang dapat diedit</div>
+                                </div>
+                            </a>
+                            <a href="{{ route('cv-preview.download-json') }}" class="flex items-center px-4 py-3 text-xs sm:text-sm font-semibold text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 transition">
+                                <span class="mr-3 text-lg">📋</span>
+                                <div>
+                                    <div class="font-bold text-gray-900 dark:text-gray-100">JSON Resume (.json)</div>
+                                    <div class="text-[11px] text-gray-500 font-normal">Format data standar portabel</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </x-slot>

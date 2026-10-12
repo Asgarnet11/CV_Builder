@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/cv-preview', [CvPreviewController::class, 'show'])->name('cv-preview.show');
     Route::get('/cv-preview/download', [CvPreviewController::class, 'downloadPdf'])->name('cv-preview.download');
+    Route::get('/cv-preview/download-word', [CvPreviewController::class, 'downloadWord'])->name('cv-preview.download-word');
+    Route::get('/cv-preview/download-json', [CvPreviewController::class, 'downloadJson'])->name('cv-preview.download-json');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
