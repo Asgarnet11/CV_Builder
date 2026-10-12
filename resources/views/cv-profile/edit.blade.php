@@ -369,18 +369,166 @@
                             <x-input-error class="mt-2" :messages="$errors->get('address')" />
                         </div>
 
-                        <!-- Summary -->
-                        <div>
-                            <x-input-label for="summary" :value="__('Ringkasan Profil (Professional Summary)') />
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                                {{ __('Tuliskan 2-4 kalimat ringkas yang merangkum latar belakang, minat spesialisasi, dan nilai tambah Anda.') }}
-                            </p>
+                        <!-- Summary with AI Assistant -->
+                        <div x-data="{
+                            showAiModal: false,
+                            loadingAi: false,
+                            aiRole: '{{ addslashes($profile?->headline ?? '') }}',
+                            aiLevel: 'mid',
+                            aiSkills: '',
+                            aiTone: 'professional',
+                            aiLang: 'id',
+                            aiResult: '',
+                            generateSummary() {
+                                if (!this.aiRole.trim()) {
+                                    alert('Mohon masukkan profesi/bidang pekerjaan Anda.');
+                                    return;
+                                }
+                                this.loadingAi = true;
+                                this.aiResult = '';
+                                fetch('{{ route('ai.generate-summary') }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('meta[name=\'csrf-token\']').getAttribute('content'),
+                                        'Accept': 'application/json'
+                                    },
+                                    body: JSON.stringify({
+                                        role: this.aiRole,
+                                        experience_level: this.aiLevel,
+                                        skills: this.aiSkills,
+                                        tone: this.aiTone,
+                                        language: this.aiLang
+                                    })
+                                })
+                                .then(res => res.json())
+                                .then(data => {
+                                    this.loadingAi = false;
+                                    if (data.status === 'success') {
+                                        this.aiResult = data.summary;
+                                    } else {
+                                        alert('Gagal menghasilkan ringkasan AI.');
+                                    }
+                                })
+                                .catch(err => {
+                                    this.loadingAi = false;
+                                    alert('Terjadi kesalahan jaringan.');
+                                });
+                            },
+                            applySummary() {
+                                const textarea = document.getElementById('summary');
+                                textarea.value = this.aiResult;
+                                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+                                this.showAiModal = false;
+                            }
+                        }">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                <div>
+                                    <x-input-label for="summary" :value="__('Ringkasan Profil (Professional Summary)')" />
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                                        {{ __('Tuliskan 2-4 kalimat ringkas yang merangkum latar belakang, minat spesialisasi, dan nilai tambah Anda.') }}
+                                    </p>
+                                </div>
+                                <button type="button" 
+                                        @click="showAiModal = true; if(!aiRole) { const hl = document.getElementById('headline'); if(hl && hl.value) aiRole = hl.value; }"
+                                        class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-sm transition shrink-0 self-start sm:self-auto">
+                                    <svg class="w-3.5 h-3.5 mr-1.5 text-amber-300 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                    </svg>
+                                    {{ __('✨ AI Assistant') }}
+                                </button>
+                            </div>
+
                             <textarea id="summary" 
                                       name="summary" 
                                       rows="5" 
                                       class="mt-1 block w-full rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 shadow-sm"
                                       placeholder="Contoh: Lulusan baru Informatika dengan minat kuat dalam pengembangan aplikasi web Laravel. Terbiasa membangun antarmuka responsif dan REST API yang teruji...">{{ old('summary', $profile?->summary ?? '') }}</textarea>
                             <x-input-error class="mt-2" :messages="$errors->get('summary')" />
+
+                            <!-- AI Assistant Modal -->
+                            <div x-show="showAiModal" 
+                                 style="display: none;" 
+                                 class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0"
+                                 x-transition:enter-end="opacity-100"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100"
+                                 x-transition:leave-end="opacity-0">
+                                <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden border border-gray-200 dark:border-gray-700 flex flex-col"
+                                     @click.away="showAiModal = false">
+                                    <div class="px-6 py-4 bg-gradient-to-r from-violet-600 to-indigo-600 text-white flex items-center justify-between">
+                                        <div class="flex items-center space-x-2">
+                                            <span class="p-1.5 bg-white/20 rounded-lg">✨</span>
+                                            <h3 class="font-bold text-base">AI Resume Writer</h3>
+                                        </div>
+                                        <button type="button" @click="showAiModal = false" class="text-white/80 hover:text-white text-xl leading-none">&times;</button>
+                                    </div>
+
+                                    <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+                                        <div>
+                                            <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1">Profesi / Target Pekerjaan *</label>
+                                            <input type="text" x-model="aiRole" placeholder="Misal: Backend Laravel Developer, UI Designer" class="w-full text-sm rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1">Tingkat Pengalaman</label>
+                                                <select x-model="aiLevel" class="w-full text-sm rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                                    <option value="fresh_graduate">Fresh Graduate / Pemula</option>
+                                                    <option value="junior">Junior (1-2 tahun)</option>
+                                                    <option value="mid">Menengah (3-5 tahun)</option>
+                                                    <option value="senior">Senior / Eksekutif (5+ tahun)</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1">Gaya Bahasa (Tone)</label>
+                                                <select x-model="aiTone" class="w-full text-sm rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                                    <option value="professional">Profesional</option>
+                                                    <option value="executive">Eksekutif / Strategis</option>
+                                                    <option value="impactful">Berdampak & Aktif</option>
+                                                    <option value="concise">Ringkas & Padat</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-2 gap-3">
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1">Bahasa</label>
+                                                <select x-model="aiLang" class="w-full text-sm rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                                    <option value="id">Bahasa Indonesia</option>
+                                                    <option value="en">English</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-1">Keahlian Utama (Opsional)</label>
+                                                <input type="text" x-model="aiSkills" placeholder="Misal: PHP, MySQL, REST API" class="w-full text-sm rounded-xl border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100">
+                                            </div>
+                                        </div>
+
+                                        <!-- Preview Box -->
+                                        <div x-show="aiResult" class="p-3 bg-indigo-50 dark:bg-indigo-950/40 rounded-xl border border-indigo-200 dark:border-indigo-800 text-sm text-gray-800 dark:text-gray-200 leading-relaxed">
+                                            <div class="text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-1 flex items-center">
+                                                <span class="mr-1">🎯</span> Saran Hasil AI:
+                                            </div>
+                                            <p x-text="aiResult"></p>
+                                        </div>
+                                    </div>
+
+                                    <div class="px-6 py-4 bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                                        <button type="button" @click="generateSummary" :disabled="loadingAi" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl transition disabled:opacity-50 shadow-sm">
+                                            <svg x-show="loadingAi" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                                            <span x-text="loadingAi ? 'Menghasilkan...' : (aiResult ? 'Buat Ulang (Regenerate)' : 'Hasilkan Ringkasan ✨')"></span>
+                                        </button>
+
+                                        <div class="flex items-center space-x-2">
+                                            <button type="button" @click="showAiModal = false" class="px-3 py-2 text-xs font-medium text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-xl transition">Batal</button>
+                                            <button type="button" x-show="aiResult" @click="applySummary" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl transition shadow-sm">Gunakan Hasil Ini ✓</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

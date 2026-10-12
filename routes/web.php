@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AiAssistantController;
 use App\Http\Controllers\CvPreviewController;
 use App\Http\Controllers\CvProfileController;
 use App\Http\Controllers\EducationController;
@@ -23,6 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/cv-profile', [CvProfileController::class, 'edit'])->name('cv-profile.edit');
     Route::put('/cv-profile', [CvProfileController::class, 'update'])->name('cv-profile.update');
     Route::post('/cv-profile/photo', [CvProfileController::class, 'updatePhoto'])->name('cv-profile.update-photo');
+    Route::post('/ai/generate-summary', [AiAssistantController::class, 'generateSummary'])->name('ai.generate-summary');
+    Route::post('/ai/generate-experience', [AiAssistantController::class, 'generateExperience'])->name('ai.generate-experience');
 
     Route::get('/cv-preview', [CvPreviewController::class, 'show'])->name('cv-preview.show');
     Route::get('/cv-preview/download', [CvPreviewController::class, 'downloadPdf'])->name('cv-preview.download');
