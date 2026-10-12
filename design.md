@@ -5,6 +5,12 @@ Letakkan file ini di `.agent/rules/design-system.md` agar selalu dibaca Antigrav
 ## 1. Tujuan
 Website builder CV ini harus **tampil** seperti portal SSCASN (referensi: https://sscasn.bkn.go.id/) dan **berfungsi penuh** (bukan sekadar tampilan). Meniru gaya, bukan identitas.
 
+## 1.1 Entitas & Kepemilikan Sistem
+- **Instansi Pengguna**: BPVP Kendari (Balai Pelatihan Vokasi dan Produktivitas Kendari)
+- **Pengembang (Developer)**: a2developer kendari (https://a2dev.my.id)
+- **Kontak Resmi / WhatsApp**: +62 882-0212-91025
+- **Tujuan Khusus**: Penyiapan dokumen CV terstandarisasi industri & ATS bagi peserta pelatihan dan alumni BPVP Kendari.
+
 ## 2. Larangan Branding
 - Jangan memakai logo SSCASN, logo BKN, lambang Garuda, foto peserta, atau teks "BKN/SSCASN".
 - Gunakan logo dan nama sendiri (LaraCV). Jangan membuat situs terlihat seperti situs pemerintah asli.

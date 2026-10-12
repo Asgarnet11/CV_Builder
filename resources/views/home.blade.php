@@ -45,7 +45,7 @@
                     <!-- Pill Tag Status -->
                     <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 text-xs font-semibold tracking-wide">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span>Portal Karir Nasional • Seleksi Rekrutmen 2026</span>
+                        <span>Portal Karir Vokasi • BPVP Kendari</span>
                     </div>
 
                     <!-- Dynamic Hero Heading (FR-01.2 & SSCASN style) -->
@@ -163,7 +163,7 @@
                             </div>
                             <div>
                                 <h4 class="font-extrabold text-base text-slate-900 leading-snug">Larasati Putri, S.Kom</h4>
-                                <p class="text-xs text-primary font-semibold">Analis Sistem Informasi • Jakarta</p>
+                                <p class="text-xs text-primary font-semibold">Alumni Pelatihan • BPVP Kendari</p>
                                 <p class="text-[11px] text-slate-500">larasati.putri@email.com</p>
                             </div>
                         </div>

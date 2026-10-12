@@ -120,11 +120,11 @@
                 <!-- Right Column: Contact Channels & Operational Hours -->
                 <div class="lg:col-span-5 space-y-6">
                     
-                    <!-- Box 1: Layanan Hotline -->
+                    <!-- Box 1: Layanan Hotline & WhatsApp -->
                     <div class="p-6 rounded-3xl bg-white border border-slate-200 shadow-sm space-y-4">
                         <h3 class="text-sm font-bold text-primary uppercase tracking-wider flex items-center gap-2">
                             <span class="w-6 h-0.5 bg-primary rounded-full"></span>
-                            Saluran Layanan Resmi
+                            Saluran Layanan Resmi BPVP
                         </h3>
                         <ul class="space-y-3.5 text-xs text-slate-600">
                             <li class="flex items-start gap-3">
@@ -134,8 +134,14 @@
                                     </svg>
                                 </div>
                                 <div>
-                                    <strong class="block text-slate-900">Call Center / Telepon</strong>
-                                    <span>021-8093008 (Pukul 08.00 - 16.00 WIB)</span>
+                                    <strong class="block text-slate-900">Telepon / WhatsApp Layanan</strong>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <a href="tel:+62882021291025" class="font-bold text-primary hover:underline">+62 882-0212-91025</a>
+                                        <a href="https://wa.me/62882021291025" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold hover:bg-emerald-200 transition">
+                                            Chat WhatsApp &rarr;
+                                        </a>
+                                    </div>
+                                    <span class="text-[11px] text-slate-400">Aktif Senin - Jumat (08.00 - 16.00 WITA)</span>
                                 </div>
                             </li>
                             <li class="flex items-start gap-3">
@@ -146,7 +152,8 @@
                                 </div>
                                 <div>
                                     <strong class="block text-slate-900">Email Helpdesk</strong>
-                                    <span>helpdesk@laracv.id (Respon 1x24 jam kerja)</span>
+                                    <a href="mailto:helpdesk@laracv.id" class="text-primary hover:underline">helpdesk@laracv.id</a>
+                                    <span class="block text-[11px] text-slate-400">Respon tiket 1x24 jam kerja</span>
                                 </div>
                             </li>
                             <li class="flex items-start gap-3">
@@ -158,17 +165,34 @@
                                 </div>
                                 <div>
                                     <strong class="block text-slate-900">Alamat Kantor</strong>
-                                    <span>Gedung Pusat Karir Digital, Lantai 5, Jl. Jenderal Sudirman Kav. 24, Jakarta Pusat</span>
+                                    <span>Balai Pelatihan Vokasi dan Produktivitas (BPVP) Kendari, Kota Kendari, Sulawesi Tenggara</span>
                                 </div>
                             </li>
                         </ul>
                     </div>
 
-                    <!-- Box 2: Jam Operasional -->
+                    <!-- Box 2: Pengembang & Kemitraan -->
+                    <div class="p-6 rounded-3xl bg-slate-900 text-white shadow-sm space-y-3">
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-sky-300 text-[10px] font-bold uppercase tracking-wider">
+                            <span>Informasi Pengembang</span>
+                        </div>
+                        <h4 class="font-extrabold text-sm text-white">Dikembangkan oleh a2developer kendari</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            Sistem portal CV Builder terstandarisasi ini dikembangkan oleh <strong>a2developer kendari</strong> untuk <strong>BPVP Kendari</strong> guna menunjang kesiapan karir vokasi dan serapan alumni pelatihan kerja.
+                        </p>
+                        <div class="pt-1">
+                            <a href="https://a2dev.my.id" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-xs font-bold text-sky-400 hover:text-sky-300 transition underline underline-offset-2">
+                                <span>Kunjungi https://a2dev.my.id</span>
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Box 3: Jam Operasional -->
                     <div class="p-6 rounded-3xl bg-primary/5 border border-primary/20 space-y-2">
                         <h4 class="font-bold text-xs uppercase tracking-wide text-primary">Jam Operasional Layanan</h4>
                         <p class="text-xs text-slate-600 leading-relaxed">
-                            Layanan konsultasi tiket aktif pada hari Senin - Jumat pukul 08:00 - 16:00 WIB (kecuali hari libur nasional). Tiket yang masuk di luar jam operasional akan diproses pada hari kerja berikutnya.
+                            Layanan konsultasi tiket aktif pada hari Senin - Jumat pukul 08:00 - 16:00 WITA (kecuali hari libur nasional). Tiket yang masuk di luar jam operasional akan diproses pada hari kerja berikutnya.
                         </p>
                     </div>
 

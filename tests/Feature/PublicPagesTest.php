@@ -64,6 +64,10 @@ class PublicPagesTest extends TestCase
         $response->assertSee('Kirim Tiket Aduan / Pertanyaan');
         $response->assertSee('Kirim Tiket Aduan');
         $response->assertSee('helpdesk@laracv.id');
+        $response->assertSee('+62 882-0212-91025');
+        $response->assertSee('BPVP Kendari');
+        $response->assertSee('a2developer kendari');
+        $response->assertSee('https://a2dev.my.id');
     }
 
     /**
@@ -105,5 +109,9 @@ class PublicPagesTest extends TestCase
         $response->assertSee(route('faq'));
         $response->assertSee(route('panduan'));
         $response->assertSee(route('bantuan'));
+        $response->assertSee('BPVP Kendari');
+        $response->assertSee('a2developer kendari');
+        $response->assertSee('https://a2dev.my.id');
+        $response->assertSee('+62 882-0212-91025');
     }
 }
