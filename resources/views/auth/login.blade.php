@@ -52,7 +52,7 @@
 
         <!-- Submit Button -->
         <div class="pt-2">
-            <button type="submit" class="w-full inline-flex items-center justify-center px-5 py-3 bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-bold text-sm rounded-xl shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/40 active:scale-[0.99] transition duration-200">
+            <button type="submit" class="w-full inline-flex items-center justify-center px-5 py-3 bg-primary hover:bg-primary-dark text-white font-bold text-sm rounded-lg shadow-md hover:shadow active:scale-[0.99] transition duration-200">
                 <span>{{ __('Masuk ke Akun') }}</span>
                 <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -61,10 +61,10 @@
         </div>
 
         <!-- Register Switch Prompt -->
-        <div class="pt-4 border-t border-slate-100 dark:border-slate-800 text-center">
-            <p class="text-xs text-slate-500 dark:text-slate-400">
+        <div class="pt-4 border-t border-slate-100 text-center">
+            <p class="text-xs text-slate-500">
                 Belum memiliki akun?
-                <a href="{{ route('register') }}" class="font-bold text-indigo-600 dark:text-indigo-400 hover:underline ml-1">
+                <a href="{{ route('register') }}" class="font-bold text-primary hover:underline ml-1">
                     Daftar Sekarang &rarr;
                 </a>
             </p>

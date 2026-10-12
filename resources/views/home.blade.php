@@ -1,391 +1,666 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="LaraCV - Platform Online CV Builder profesional untuk pencari kerja, siswa, dan profesional muda. Bangun CV terstandar dalam hitungan menit.">
-    <title>LaraCV - Online CV Builder Platform Profesional</title>
+<x-public-layout title="LaraCV - Portal Resmi Pembuat CV Profesional">
+    <!-- Hero Section (Gaya SSCASN: Gradasi Biru Resmi + Carousel + Controls) -->
+    <section id="home" 
+             class="relative z-10 pt-28 pb-16 lg:pt-36 lg:pb-24 overflow-hidden text-white"
+             style="background: linear-gradient(135deg, #1270a0 0%, #1a8cc8 35%, #269dd8 65%, #1e8ec4 100%);"
+             x-data="{
+                 activeSlide: 0,
+                 totalSlides: 3,
+                 timer: null,
+                 startAutoPlay() {
+                     this.timer = setInterval(() => {
+                         this.nextSlide();
+                     }, 5000);
+                 },
+                 stopAutoPlay() {
+                     clearInterval(this.timer);
+                 },
+                 nextSlide() {
+                     this.activeSlide = (this.activeSlide + 1) % this.totalSlides;
+                 },
+                 prevSlide() {
+                     this.activeSlide = (this.activeSlide - 1 + this.totalSlides) % this.totalSlides;
+                 },
+                 goToSlide(index) {
+                     this.activeSlide = index;
+                 }
+             }"
+             x-init="startAutoPlay()"
+             @mouseenter="stopAutoPlay()"
+             @mouseleave="startAutoPlay()">
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <!-- Subtle Dot Grid / Map Overlay Background -->
+        <div class="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(#ffffff_1.5px,transparent_1.5px)] [background-size:24px_24px]"></div>
+        
+        <!-- Subtle Ambient Rings -->
+        <div class="absolute -top-32 -left-32 w-96 h-96 rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);"></div>
+        <div class="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full pointer-events-none" style="background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 65%);"></div>
 
-    <!-- Styles / Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-        h1, h2, h3, h4, .font-heading {
-            font-family: 'Outfit', sans-serif;
-        }
-    </style>
-</head>
-<body class="bg-slate-950 text-slate-100 antialiased selection:bg-indigo-500 selection:text-white">
-
-    <!-- Background Atmospheric Glows -->
-    <div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
-        <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[70rem] h-[35rem] bg-gradient-to-tr from-indigo-600/20 via-violet-600/20 to-sky-500/10 blur-[130px] rounded-full"></div>
-        <div class="absolute top-[45rem] -left-40 w-[45rem] h-[35rem] bg-indigo-900/15 blur-[140px] rounded-full"></div>
-        <div class="absolute top-[80rem] -right-40 w-[45rem] h-[35rem] bg-violet-900/15 blur-[140px] rounded-full"></div>
-    </div>
-
-    <!-- Navigation Header -->
-    <header class="sticky top-0 z-50 backdrop-blur-xl bg-slate-950/80 border-b border-slate-800/80 transition-all">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-20">
-                <!-- Brand Logo -->
-                <a href="{{ route('home') }}" class="flex items-center gap-3 group">
-                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition duration-200">
-                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                
+                <!-- Hero Left Column: Text & Slider Controls -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    
+                    <!-- Pill Tag Status -->
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 text-xs font-semibold tracking-wide">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span>Portal Karir Nasional • Seleksi Rekrutmen 2026</span>
                     </div>
-                    <div>
-                        <span class="text-2xl font-black tracking-tight text-white font-heading">Lara<span class="text-indigo-400">CV</span></span>
-                        <span class="hidden sm:inline-block ml-2 px-2 py-0.5 text-[10px] uppercase font-bold tracking-wider bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-md">Builder</span>
+
+                    <!-- Dynamic Hero Heading (FR-01.2 & SSCASN style) -->
+                    <h1 id="hero-heading" class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight text-white">
+                        {{ $heroHeading ?? 'Bangun CV Profesional Anda dalam Hitungan Menit' }}
+                    </h1>
+
+                    <!-- Hero Subtitle -->
+                    <p class="text-sm sm:text-base text-white/90 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-normal">
+                        Kelola data profil, pengalaman kerja, pendidikan terakreditasi, serta portofolio kompetensi dalam format dokumen terstandarisasi yang ramah pembaca mesin (ATS) dan tim penilai rekrutmen.
+                    </p>
+
+                    <!-- Hero Action Buttons -->
+                    <div class="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+                        @auth
+                            <a href="{{ route('cv-profile.edit') }}" 
+                               class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-primary font-bold text-sm shadow-md hover:bg-white/90 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                                <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
+                                <span>Kelola Biodata CV</span>
+                            </a>
+                            <a href="{{ route('dashboard') }}" 
+                               class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-white/50 bg-white/15 backdrop-blur-sm text-white font-semibold text-sm hover:bg-white/25 transition-all">
+                                <span>Buka Dashboard</span>
+                            </a>
+                        @else
+                            <a href="{{ route('register') }}" 
+                               class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-white text-primary font-bold text-sm shadow-md hover:bg-white/90 hover:-translate-y-0.5 active:translate-y-0 transition-all">
+                                <span>Daftar Akun Sekarang</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </a>
+                            <a href="{{ route('bantuan') }}" 
+                               class="inline-flex items-center gap-2 px-5 py-3 rounded-lg border border-white/50 bg-white/15 backdrop-blur-sm text-white font-semibold text-sm hover:bg-white/25 transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+                                </svg>
+                                <span>Layanan Bantuan</span>
+                            </a>
+                        @endauth
                     </div>
-                </a>
 
-                <!-- Desktop Navigation Links -->
-                <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
-                    <a href="#fitur" class="hover:text-white transition">Fitur Utama</a>
-                    <a href="#keunggulan" class="hover:text-white transition">Keunggulan</a>
-                    <a href="#workflow" class="hover:text-white transition">Cara Kerja</a>
-                    <a href="#faq" class="hover:text-white transition">FAQ</a>
-                </nav>
-
-                <!-- Contextual Authentication Action Buttons -->
-                <div class="flex items-center gap-3">
-                    @auth
-                        <!-- Authenticated User -->
-                        <a id="btn-dashboard-nav" href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-sm font-bold shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 transition duration-200">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                    <!-- Carousel Controls (Gaya Resmi SSCASN: Panah Bulat + Indikator Titik/Pill) -->
+                    <div class="pt-4 flex items-center justify-center lg:justify-start gap-3">
+                        <!-- Panah Kiri -->
+                        <button type="button" 
+                                @click="prevSlide()" 
+                                aria-label="Slide sebelumnya" 
+                                class="flex items-center justify-center w-8 h-8 rounded-full border border-white/30 bg-white/15 text-white transition-colors duration-200 cursor-pointer hover:bg-white/30 backdrop-blur-sm">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m15 18-6-6 6-6"></path>
                             </svg>
-                            {{ __('Dashboard Saya') }}
-                        </a>
-                    @else
-                        <!-- Guest User -->
-                        <a id="btn-login-nav" href="{{ route('login') }}" class="px-4 py-2.5 text-sm font-semibold text-slate-300 hover:text-white transition">
-                            {{ __('Masuk') }}
-                        </a>
-                        <a id="btn-register-nav" href="{{ route('register') }}" class="inline-flex items-center px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold shadow-lg shadow-indigo-600/30 hover:shadow-indigo-600/50 transition duration-200">
-                            {{ __('Daftar Gratis') }}
-                        </a>
-                    @endauth
-                </div>
-            </div>
-        </div>
-    </header>
+                        </button>
 
-    <!-- Hero Section -->
-    <section class="relative pt-12 pb-24 md:pt-20 md:pb-32 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-3xl mx-auto">
-                <!-- Badge -->
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-700/80 shadow-inner mb-6">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    <span class="text-xs font-semibold text-slate-300">Generasi Baru Builder Karir Digital • v1.0 Foundation</span>
-                </div>
+                        <!-- Indikator Slide (Pill untuk aktif, dot untuk inaktif) -->
+                        <div class="flex items-center gap-2">
+                            <button type="button" 
+                                    @click="goToSlide(0)" 
+                                    aria-label="Slide 1: Seleksi Karir" 
+                                    class="h-2 rounded-full transition-all duration-300 cursor-pointer"
+                                    :class="activeSlide === 0 ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'"></button>
+                            <button type="button" 
+                                    @click="goToSlide(1)" 
+                                    aria-label="Slide 2: Format Standar ATS" 
+                                    class="h-2 rounded-full transition-all duration-300 cursor-pointer"
+                                    :class="activeSlide === 1 ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'"></button>
+                            <button type="button" 
+                                    @click="goToSlide(2)" 
+                                    aria-label="Slide 3: Ekspor Multi-Format" 
+                                    class="h-2 rounded-full transition-all duration-300 cursor-pointer"
+                                    :class="activeSlide === 2 ? 'w-8 bg-white' : 'w-2 bg-white/40 hover:bg-white/70'"></button>
+                        </div>
 
-                <!-- Dynamic Hero Heading (FR-01.2) -->
-                <h1 id="hero-heading" class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white font-heading leading-tight md:leading-[1.15]">
-                    {{ $heroHeading ?? 'Bangun CV Profesional Anda dalam Hitungan Menit' }}
-                </h1>
-
-                <!-- Subtitle / Value Proposition -->
-                <p class="mt-6 text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl mx-auto">
-                    Platform cerdas untuk mengelola biodata, riwayat pendidikan, pengalaman kerja, dan keahlian Anda secara modular, aman, dan siap memikat HRD & Recruiter.
-                </p>
-
-                <!-- Hero CTA Buttons -->
-                <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-                    @auth
-                        <a href="{{ route('cv-profile.edit') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-base font-bold shadow-xl shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
-                            <svg class="w-5 h-5 mr-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        <!-- Panah Kanan -->
+                        <button type="button" 
+                                @click="nextSlide()" 
+                                aria-label="Slide berikutnya" 
+                                class="flex items-center justify-center w-8 h-8 rounded-full border border-white/30 bg-white/15 text-white transition-colors duration-200 cursor-pointer hover:bg-white/30 backdrop-blur-sm">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m9 18 6-6-6-6"></path>
                             </svg>
-                            {{ __('Kelola Biodata CV Saya') }}
-                        </a>
-                        <a href="{{ route('dashboard') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-7 py-4 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-200 text-base font-semibold hover:border-slate-600 transition duration-200">
-                            {{ __('Buka Dashboard') }}
-                        </a>
-                    @else
-                        <a href="{{ route('register') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 rounded-2xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white text-base font-bold shadow-xl shadow-indigo-600/30 hover:shadow-indigo-600/50 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200">
-                            {{ __('Mulai Buat CV Gratis') }}
-                            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                            </svg>
-                        </a>
-                        <a href="{{ route('login') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-7 py-4 rounded-2xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700/80 text-slate-200 text-base font-semibold hover:border-slate-600 transition duration-200">
-                            {{ __('Masuk ke Akun') }}
-                        </a>
-                    @endauth
+                        </button>
+                    </div>
+
                 </div>
 
-                <!-- Trust Badges -->
-                <div class="mt-12 flex flex-wrap items-center justify-center gap-y-2 gap-x-8 text-xs text-slate-400 font-medium">
-                    <span class="inline-flex items-center gap-1.5">
-                        <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                        100% Bebas Biaya Pendaftaran
-                    </span>
-                    <span class="inline-flex items-center gap-1.5">
-                        <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                        Standar Form Terstruktur & Aman
-                    </span>
-                    <span class="inline-flex items-center gap-1.5">
-                        <svg class="w-4 h-4 text-emerald-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-                        Penyimpanan Berkas Foto Terisolasi
-                    </span>
-                </div>
-            </div>
-
-            <!-- Interactive Visual Preview Showcase -->
-            <div class="mt-16 max-w-5xl mx-auto">
-                <div class="relative rounded-3xl p-2 sm:p-3 bg-gradient-to-b from-indigo-500/30 via-slate-800/40 to-slate-900/60 border border-indigo-500/20 shadow-2xl shadow-indigo-500/10">
-                    <div class="rounded-2xl bg-slate-900 border border-slate-800 overflow-hidden shadow-inner p-6 sm:p-8">
-                        <!-- Mockup Topbar -->
-                        <div class="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
-                            <div class="flex items-center gap-2">
-                                <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
-                                <span class="w-3 h-3 rounded-full bg-amber-500/80"></span>
-                                <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
-                                <span class="ml-3 text-xs text-slate-400 font-mono">laracv.app/cv-preview</span>
+                <!-- Hero Right Column: Interactive Carousel Showcase -->
+                <div class="lg:col-span-5 relative">
+                    
+                    <!-- Slide 1: Dokumen Standar Seleksi -->
+                    <div x-show="activeSlide === 0"
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 translate-x-4"
+                         x-transition:enter-end="opacity-100 translate-x-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 translate-x-0"
+                         x-transition:leave-end="opacity-0 -translate-x-4"
+                         class="rounded-3xl bg-white/95 text-slate-800 p-6 sm:p-7 shadow-2xl border border-white/40 backdrop-blur-md">
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+                            <div class="flex items-center gap-2.5">
+                                <span class="w-3 h-3 rounded-full bg-red-400"></span>
+                                <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                                <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+                                <span class="text-xs font-bold text-primary ml-1">Dokumen Resmi Terverifikasi</span>
                             </div>
-                            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
-                                Mode Editor Interaktif
+                            <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                                Versi 2026
                             </span>
                         </div>
-
-                        <!-- Mockup Content Grid -->
-                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                            <!-- Left Sidebar Mock -->
-                            <div class="p-5 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-4">
-                                <div class="flex items-center gap-4">
-                                    <div class="w-16 h-16 rounded-xl bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center text-white font-bold text-xl shadow-md">
-                                        JD
-                                    </div>
-                                    <div>
-                                        <div class="h-4 w-28 bg-slate-700 rounded mb-1.5"></div>
-                                        <div class="h-3 w-20 bg-indigo-500/50 rounded"></div>
-                                    </div>
-                                </div>
-                                <div class="space-y-2 pt-2">
-                                    <div class="h-2.5 w-full bg-slate-800 rounded"></div>
-                                    <div class="h-2.5 w-4/5 bg-slate-800 rounded"></div>
-                                    <div class="h-2.5 w-3/4 bg-slate-800 rounded"></div>
-                                </div>
-                                <div class="pt-4 border-t border-slate-800/80 space-y-2">
-                                    <div class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Keahlian Teruji</div>
-                                    <div class="flex flex-wrap gap-1.5">
-                                        <span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] font-medium">Laravel</span>
-                                        <span class="px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 text-[10px] font-medium">Tailwind CSS</span>
-                                        <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-medium">MySQL</span>
-                                        <span class="px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 text-[10px] font-medium">REST API</span>
-                                    </div>
-                                </div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-primary-dark to-primary flex items-center justify-center text-white font-extrabold text-xl shadow-md">
+                                LP
                             </div>
-
-                            <!-- Right Content Mock -->
-                            <div class="lg:col-span-2 p-5 rounded-2xl bg-slate-950/70 border border-slate-800/80 space-y-5">
-                                <div>
-                                    <div class="text-xs font-bold uppercase tracking-wider text-indigo-400 mb-2">Ringkasan Profesional</div>
-                                    <p class="text-xs text-slate-300 leading-relaxed">
-                                        Profesional web developer muda dengan fokus pada arsitektur bersih, performa tinggi, dan pengalaman pengguna modern. Berpengalaman merancang basis data relasional ternormalisasi dan antarmuka responsif.
-                                    </p>
-                                </div>
-                                <div>
-                                    <div class="text-xs font-bold uppercase tracking-wider text-indigo-400 mb-3">Riwayat Karir & Pendidikan</div>
-                                    <div class="space-y-3">
-                                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex justify-between items-center">
-                                            <div>
-                                                <div class="text-xs font-bold text-white">Full Stack Developer Junior</div>
-                                                <div class="text-[11px] text-slate-400">PT Inovasi Teknologi Bangsa</div>
-                                            </div>
-                                            <span class="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold">2024 - Sekarang</span>
-                                        </div>
-                                        <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800 flex justify-between items-center">
-                                            <div>
-                                                <div class="text-xs font-bold text-white">S1 Rekayasa Perangkat Lunak</div>
-                                                <div class="text-[11px] text-slate-400">Institut Teknologi Digital Nusantara</div>
-                                            </div>
-                                            <span class="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-semibold">2020 - 2024</span>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div>
+                                <h4 class="font-extrabold text-base text-slate-900 leading-snug">Larasati Putri, S.Kom</h4>
+                                <p class="text-xs text-primary font-semibold">Analis Sistem Informasi • Jakarta</p>
+                                <p class="text-[11px] text-slate-500">larasati.putri@email.com</p>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-xs text-slate-600 bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 mb-4">
+                            <div class="font-bold text-slate-800 uppercase tracking-wider text-[11px] flex items-center gap-1.5 text-primary">
+                                <span class="w-2 h-2 rounded-full bg-primary"></span>
+                                Ringkasan Kualifikasi
+                            </div>
+                            <p class="leading-relaxed">
+                                Lulusan berprestasi dengan rekam jejak riset sistem enterprise dan sertifikasi keahlian digital nasional. Siap berkontribusi optimal.
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2 text-center text-xs">
+                            <div class="p-2 rounded-lg bg-sky-50 border border-sky-100 font-semibold text-primary">
+                                Skor ATS: <strong class="text-slate-900">96/100</strong>
+                            </div>
+                            <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-100 font-semibold text-emerald-700">
+                                Status: <strong>Siap Seleksi</strong>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Slide 2: Format Standar ATS -->
+                    <div x-show="activeSlide === 1"
+                         x-cloak
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 translate-x-4"
+                         x-transition:enter-end="opacity-100 translate-x-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 translate-x-0"
+                         x-transition:leave-end="opacity-0 -translate-x-4"
+                         class="rounded-3xl bg-white/95 text-slate-800 p-6 sm:p-7 shadow-2xl border border-white/40 backdrop-blur-md">
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Format Baku ATS Friendly</span>
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                                100% Terbaca
+                            </span>
+                        </div>
+                        <ul class="space-y-3 text-xs text-slate-700">
+                            <li class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                                <span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 text-[10px] font-bold">1</span>
+                                <div>
+                                    <strong class="block text-slate-900">Hierarki Heading Baku</strong>
+                                    Struktur tag judul H1-H3 terstandar internasional tanpa elemen dekoratif rancu.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                                <span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 text-[10px] font-bold">2</span>
+                                <div>
+                                    <strong class="block text-slate-900">Tipografi Teruji</strong>
+                                    Font Poppins & Helvetica dengan spasi proporsional agar lolos parsing otomatis.
+                                </div>
+                            </li>
+                            <li class="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                                <span class="w-5 h-5 rounded-full bg-primary text-white flex items-center justify-center shrink-0 text-[10px] font-bold">3</span>
+                                <div>
+                                    <strong class="block text-slate-900">Tautan Kontak Valid</strong>
+                                    Format nomor telepon, email, dan portofolio resmi tanpa broken links.
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Slide 3: Ekspor & Integrasi Cepat -->
+                    <div x-show="activeSlide === 2"
+                         x-cloak
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 translate-x-4"
+                         x-transition:enter-end="opacity-100 translate-x-0"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 translate-x-0"
+                         x-transition:leave-end="opacity-0 -translate-x-4"
+                         class="rounded-3xl bg-white/95 text-slate-800 p-6 sm:p-7 shadow-2xl border border-white/40 backdrop-blur-md">
+                        <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+                            <span class="text-xs font-bold text-slate-700 uppercase tracking-wider">Multi-Format Dokumen</span>
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded bg-primary text-white">
+                                Siap Unduh
+                            </span>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 mb-4 text-center">
+                            <div class="p-3 rounded-xl border border-slate-200 bg-slate-50">
+                                <div class="text-red-600 font-extrabold text-sm mb-1">PDF</div>
+                                <div class="text-[10px] text-slate-500">Cetak A4 Siap Upload</div>
+                            </div>
+                            <div class="p-3 rounded-xl border border-slate-200 bg-slate-50">
+                                <div class="text-blue-600 font-extrabold text-sm mb-1">DOCX</div>
+                                <div class="text-[10px] text-slate-500">Format Word Editable</div>
+                            </div>
+                            <div class="p-3 rounded-xl border border-slate-200 bg-slate-50">
+                                <div class="text-emerald-600 font-extrabold text-sm mb-1">JSON</div>
+                                <div class="text-[10px] text-slate-500">Data Terstruktur</div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                            Unduh berkas CV Anda dalam sekali klik dengan preservasi layout piksel presisi tanpa distorsi pada lembar cetak A4.
+                        </p>
+                        <a href="{{ route('templates') }}" class="w-full inline-flex items-center justify-center py-2.5 px-4 rounded-lg bg-primary hover:bg-primary-dark text-white font-bold text-xs transition">
+                            Lihat Galeri Template →
+                        </a>
+                    </div>
+
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- Features Section (FR-01.1) -->
-    <section id="fitur" class="py-20 border-t border-slate-800/80 bg-slate-900/40 relative">
+    <!-- Section 2: Tab Pill & Timeline (Gaya SSCASN: section bg-primary/5 + kartu border-primary/60) -->
+    <section class="py-12 lg:py-16 bg-primary/5" x-data="{ currentTab: 'timeline' }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <span class="text-xs font-bold tracking-widest text-indigo-400 uppercase">Fitur Fondasi Unggulan</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2 font-heading">
-                    Semua yang Anda Butuhkan untuk Memulai Karir
+            
+            <!-- Section Header (Judul Tebal Kapital + Garis Bawah Pendek Primary) -->
+            <div class="text-center mb-8">
+                <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-800 tracking-wide uppercase">
+                    ALUR & TAHAPAN PEMBUATAN CV
                 </h2>
-                <p class="text-slate-400 text-sm mt-3">
-                    Fondasi sistem yang kokoh dan modular, dirancang untuk memudahkan kustomisasi profil tanpa ribet.
+                <div class="w-16 h-1 bg-primary mx-auto mt-2.5 rounded-full"></div>
+                <p class="text-xs sm:text-sm text-slate-500 mt-2 max-w-xl mx-auto">
+                    Ikuti alur terstruktur untuk menghasilkan dokumen CV berstandar resmi yang siap diajukan ke instansi dan perusahaan impian.
+                </p>
+            </div>
+
+            <!-- Tab / Pill Controls (Kelompok pill bergaris tipis, tab aktif latar primary) -->
+            <div class="flex items-center justify-center gap-2 mb-8 flex-wrap">
+                <button type="button" 
+                        @click="currentTab = 'timeline'"
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer border"
+                        :class="currentTab === 'timeline' ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white text-slate-600 border-primary/20 hover:border-primary/50 hover:bg-white'">
+                    Alur 5 Langkah Terpadu
+                </button>
+                <button type="button" 
+                        @click="currentTab = 'ats'"
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer border"
+                        :class="currentTab === 'ats' ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white text-slate-600 border-primary/20 hover:border-primary/50 hover:bg-white'">
+                    Standar Skrining ATS 2026
+                </button>
+                <button type="button" 
+                        @click="currentTab = 'berkas'"
+                        class="px-4 py-2 rounded-xl text-xs font-bold transition-all duration-200 cursor-pointer border"
+                        :class="currentTab === 'berkas' ? 'bg-primary text-white border-primary shadow-sm' : 'bg-white text-slate-600 border-primary/20 hover:border-primary/50 hover:bg-white'">
+                    Kelengkapan Dokumen Portofolio
+                </button>
+            </div>
+
+            <!-- Tab 1: Timeline Card (Kartu Besar dengan border primary tipis & radius besar) -->
+            <div x-show="currentTab === 'timeline'"
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 class="w-full rounded-3xl bg-white/95 backdrop-blur-sm shadow-sm border border-primary/60 py-8 px-6 lg:px-10">
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-4 relative">
+                    
+                    <!-- Langkah 1 -->
+                    <div class="relative flex flex-col items-center lg:items-start text-center lg:text-left space-y-2 group">
+                        <div class="flex items-center justify-between w-full mb-1">
+                            <div class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary font-bold shadow-sm group-hover:scale-105 transition-transform">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-warning/20 text-amber-800 border border-warning/40">
+                                Aktif
+                            </span>
+                        </div>
+                        <h4 class="font-bold text-sm text-primary">1. Biodata Diri</h4>
+                        <span class="text-[11px] font-semibold text-accent">Tahap 1 • Identitas</span>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Lengkapi kontak publik, headline karir, dan unggah pas foto formal maksimal 2MB.
+                        </p>
+                    </div>
+
+                    <!-- Langkah 2 -->
+                    <div class="relative flex flex-col items-center lg:items-start text-center lg:text-left space-y-2 group">
+                        <div class="flex items-center justify-between w-full mb-1">
+                            <div class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary font-bold shadow-sm group-hover:scale-105 transition-transform">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                                Berurutan
+                            </span>
+                        </div>
+                        <h4 class="font-bold text-sm text-primary">2. Pengalaman Kerja</h4>
+                        <span class="text-[11px] font-semibold text-accent">Tahap 2 • Karir</span>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Cantumkan riwayat pekerjaan dengan urutan drag & drop kronologis yang rapi.
+                        </p>
+                    </div>
+
+                    <!-- Langkah 3 -->
+                    <div class="relative flex flex-col items-center lg:items-start text-center lg:text-left space-y-2 group">
+                        <div class="flex items-center justify-between w-full mb-1">
+                            <div class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary font-bold shadow-sm group-hover:scale-105 transition-transform">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                                Berurutan
+                            </span>
+                        </div>
+                        <h4 class="font-bold text-sm text-primary">3. Pendidikan Formal</h4>
+                        <span class="text-[11px] font-semibold text-accent">Tahap 3 • Akademik</span>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Masukkan gelar, institusi, tahun kelulusan, dan nilai/IPK terverifikasi.
+                        </p>
+                    </div>
+
+                    <!-- Langkah 4 -->
+                    <div class="relative flex flex-col items-center lg:items-start text-center lg:text-left space-y-2 group">
+                        <div class="flex items-center justify-between w-full mb-1">
+                            <div class="w-12 h-12 rounded-xl bg-primary/10 border border-primary/30 flex items-center justify-center text-primary font-bold shadow-sm group-hover:scale-105 transition-transform">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+                                </svg>
+                            </div>
+                            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">
+                                Berurutan
+                            </span>
+                        </div>
+                        <h4 class="font-bold text-sm text-primary">4. Keahlian Khusus</h4>
+                        <span class="text-[11px] font-semibold text-accent">Tahap 4 • Skill</span>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Pilih level kompetensi (Pemula s.d. Ahli) yang selaras dengan formasi target.
+                        </p>
+                    </div>
+
+                    <!-- Langkah 5 -->
+                    <div class="relative flex flex-col items-center lg:items-start text-center lg:text-left space-y-2 group">
+                        <div class="flex items-center justify-between w-full mb-1">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-300 flex items-center justify-center text-emerald-600 font-bold shadow-sm group-hover:scale-105 transition-transform">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                            </div>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                                Siap Cetak
+                            </span>
+                        </div>
+                        <h4 class="font-bold text-sm text-emerald-700">5. Pratinjau & PDF</h4>
+                        <span class="text-[11px] font-semibold text-accent">Tahap Akhir • Unduh</span>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Simulasi kanvas A4 langsung dan cetak dokumen resmi tanpa watermarking.
+                        </p>
+                    </div>
+
+                </div>
+
+                <div class="mt-8 pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+                    <div class="flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        <span>Seluruh alur terintegrasi dalam modul wizard terpadu LaraCV.</span>
+                    </div>
+                    @auth
+                        <a href="{{ route('cv-profile.edit') }}" class="font-bold text-primary hover:underline">
+                            Mulai Langkah 1 Sekarang &rarr;
+                        </a>
+                    @else
+                        <a href="{{ route('register') }}" class="font-bold text-primary hover:underline">
+                            Daftar Gratis untuk Memulai &rarr;
+                        </a>
+                    @endauth
+                </div>
+
+            </div>
+
+            <!-- Tab 2: Standar ATS Content -->
+            <div x-show="currentTab === 'ats'"
+                 x-cloak
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 class="w-full rounded-3xl bg-white/95 backdrop-blur-sm shadow-sm border border-primary/60 py-8 px-6 lg:px-10">
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-primary"></span>
+                        Prinsip Utama Format ATS Ramah Mesin
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                        <div class="p-4 rounded-2xl bg-sky-50/50 border border-sky-100">
+                            <h4 class="font-bold text-sm text-primary mb-1">Struktur Font & Spasi Baku</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Hindari penggunaan tabel kompleks berlipat atau grafik pie chart dalam CV. Robot parser ATS membaca baris linear secara vertikal.
+                            </p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-sky-50/50 border border-sky-100">
+                            <h4 class="font-bold text-sm text-primary mb-1">Kata Kunci Relevan</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed">
+                                Gunakan istilah jabatan standar industri seperti 'Frontend Engineer' atau 'Akuntan Publik' agar cocok dengan kriteria formasi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tab 3: Kelengkapan Berkas Content -->
+            <div x-show="currentTab === 'berkas'"
+                 x-cloak
+                 x-transition:enter="transition ease-out duration-200"
+                 x-transition:enter-start="opacity-0 translate-y-2"
+                 x-transition:enter-end="opacity-100 translate-y-0"
+                 class="w-full rounded-3xl bg-white/95 backdrop-blur-sm shadow-sm border border-primary/60 py-8 px-6 lg:px-10">
+                <div class="max-w-3xl mx-auto space-y-4">
+                    <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-primary"></span>
+                        Daftar Periksa Berkas & Lampiran
+                    </h3>
+                    <ul class="space-y-2.5 text-xs text-slate-600">
+                        <li class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px]">✓</span>
+                            <span>Pas foto formal dengan rasio 3:4 latar belakang polos (maksimum 2 MB).</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px]">✓</span>
+                            <span>Riwayat ijazah dan transkrip nilai resmi dari institusi terdaftar.</span>
+                        </li>
+                        <li class="flex items-center gap-2">
+                            <span class="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-[10px]">✓</span>
+                            <span>Sertifikat pelatihan teknis atau lisensi profesi yang masih berlaku.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Section 3: Template Showcase Gallery (Formasi Template CV) -->
+    <section class="py-12 lg:py-16 bg-white border-t border-sky-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-800 tracking-wide uppercase">
+                    PILIHAN TEMPLATE FORMASI CV
+                </h2>
+                <div class="w-16 h-1 bg-primary mx-auto mt-2.5 rounded-full"></div>
+                <p class="text-xs sm:text-sm text-slate-500 mt-2 max-w-xl mx-auto">
+                    Tersedia berbagai pilihan tata letak profesional yang siap diaplikasikan seketika pada berkas Anda.
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Feature 1 -->
-                <div class="rounded-2xl p-7 bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-850 transition duration-300 group">
-                    <div class="w-12 h-12 rounded-xl bg-indigo-600/20 text-indigo-400 flex items-center justify-center mb-5 group-hover:scale-110 transition duration-200">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
+                <!-- Template 1: Modern Indigo -->
+                <div class="rounded-2xl border border-slate-200 bg-white hover:border-primary/60 hover:shadow-lg transition-all duration-300 overflow-hidden group">
+                    <div class="h-44 bg-slate-100 relative overflow-hidden flex items-center justify-center border-b border-slate-200">
+                        <div class="w-32 h-40 bg-white rounded shadow-md p-2 flex flex-col justify-between group-hover:scale-105 transition-transform">
+                            <div class="h-3 bg-primary rounded w-3/4 mb-1"></div>
+                            <div class="space-y-1">
+                                <div class="h-1 bg-slate-200 rounded w-full"></div>
+                                <div class="h-1 bg-slate-200 rounded w-5/6"></div>
+                                <div class="h-1 bg-slate-200 rounded w-4/6"></div>
+                            </div>
+                            <div class="h-6 bg-sky-50 rounded border border-sky-100"></div>
+                        </div>
+                        <span class="absolute top-3 right-3 text-[10px] font-bold px-2 py-0.5 rounded-full bg-primary text-white">
+                            Default
+                        </span>
                     </div>
-                    <h3 class="text-xl font-bold text-white font-heading">Manajemen Biodata Cerdas</h3>
-                    <p class="text-sm text-slate-400 mt-2 leading-relaxed">
-                        Pengisian profil otomatis mengambil nama dan email akun sebagai fallback awal. Sistem auto-upsert mencegah duplikasi data pengguna.
-                    </p>
+                    <div class="p-5 space-y-3">
+                        <h3 class="font-bold text-base text-slate-900">Modern Indigo</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Tata letak modern dengan aksen warna cyan-indigo yang cocok untuk industri teknologi, startup, dan korporat masa kini.
+                        </p>
+                        <div class="pt-2 flex items-center justify-between border-t border-slate-100">
+                            <span class="text-[11px] font-semibold text-emerald-600">✓ Standar ATS</span>
+                            <a href="{{ route('templates') }}" class="text-xs font-bold text-primary hover:underline">
+                                Pratinjau &rarr;
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Feature 2 -->
-                <div class="rounded-2xl p-7 bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-850 transition duration-300 group">
-                    <div class="w-12 h-12 rounded-xl bg-violet-600/20 text-violet-400 flex items-center justify-center mb-5 group-hover:scale-110 transition duration-200">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
+                <!-- Template 2: Classic Executive -->
+                <div class="rounded-2xl border border-slate-200 bg-white hover:border-primary/60 hover:shadow-lg transition-all duration-300 overflow-hidden group">
+                    <div class="h-44 bg-slate-100 relative overflow-hidden flex items-center justify-center border-b border-slate-200">
+                        <div class="w-32 h-40 bg-white rounded shadow-md p-2 flex flex-col justify-between group-hover:scale-105 transition-transform">
+                            <div class="h-3 bg-slate-800 rounded w-2/3 mx-auto mb-1"></div>
+                            <div class="space-y-1">
+                                <div class="h-1 bg-slate-200 rounded w-full"></div>
+                                <div class="h-1 bg-slate-200 rounded w-5/6"></div>
+                                <div class="h-1 bg-slate-200 rounded w-full"></div>
+                            </div>
+                            <div class="h-6 bg-slate-100 rounded border border-slate-200"></div>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold text-white font-heading">Pengelolaan Foto Terisolasi</h3>
-                    <p class="text-sm text-slate-400 mt-2 leading-relaxed">
-                        Unggah foto profil formal dengan validasi ukuran file ketat (maks 2MB). Foto lama otomatis terhapus saat diganti untuk menjaga efisiensi storage.
-                    </p>
+                    <div class="p-5 space-y-3">
+                        <h3 class="font-bold text-base text-slate-900">Classic Executive</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Gaya monokrom klasik berwibawa dengan penekanan pada rekam jejak kepemimpinan, cocok untuk instansi dan posisi manajerial.
+                        </p>
+                        <div class="pt-2 flex items-center justify-between border-t border-slate-100">
+                            <span class="text-[11px] font-semibold text-emerald-600">✓ Standar ATS</span>
+                            <a href="{{ route('templates') }}" class="text-xs font-bold text-primary hover:underline">
+                                Pratinjau &rarr;
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Feature 3 -->
-                <div class="rounded-2xl p-7 bg-slate-900/90 border border-slate-800 hover:border-indigo-500/50 hover:bg-slate-850 transition duration-300 group">
-                    <div class="w-12 h-12 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center mb-5 group-hover:scale-110 transition duration-200">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
-                        </svg>
+                <!-- Template 3: Minimalist Clean -->
+                <div class="rounded-2xl border border-slate-200 bg-white hover:border-primary/60 hover:shadow-lg transition-all duration-300 overflow-hidden group">
+                    <div class="h-44 bg-slate-100 relative overflow-hidden flex items-center justify-center border-b border-slate-200">
+                        <div class="w-32 h-40 bg-white rounded shadow-md p-2 flex flex-col justify-between group-hover:scale-105 transition-transform">
+                            <div class="h-2 bg-slate-400 rounded w-1/2 mb-1"></div>
+                            <div class="space-y-1">
+                                <div class="h-1 bg-slate-200 rounded w-full"></div>
+                                <div class="h-1 bg-slate-200 rounded w-3/4"></div>
+                                <div class="h-1 bg-slate-200 rounded w-5/6"></div>
+                            </div>
+                            <div class="h-6 bg-slate-50 rounded border border-slate-100"></div>
+                        </div>
                     </div>
-                    <h3 class="text-xl font-bold text-white font-heading">Integritas Relasional Cascade</h3>
-                    <p class="text-sm text-slate-400 mt-2 leading-relaxed">
-                        Seluruh entitas (profil, pendidikan, pengalaman, keahlian) terikat relasi aman dengan cascade deletion guna melindungi privasi dan integritas data.
-                    </p>
+                    <div class="p-5 space-y-3">
+                        <h3 class="font-bold text-base text-slate-900">Minimalist Clean</h3>
+                        <p class="text-xs text-slate-500 leading-relaxed">
+                            Format serba ringkas dan elegan dengan pemanfaatan ruang putih seimbang untuk keterbacaan tingkat tinggi.
+                        </p>
+                        <div class="pt-2 flex items-center justify-between border-t border-slate-100">
+                            <span class="text-[11px] font-semibold text-emerald-600">✓ Standar ATS</span>
+                            <a href="{{ route('templates') }}" class="text-xs font-bold text-primary hover:underline">
+                                Pratinjau &rarr;
+                            </a>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+            <div class="mt-8 text-center">
+                <a href="{{ route('templates') }}" class="inline-flex items-center gap-1.5 px-6 py-2.5 rounded-lg border border-primary text-primary font-bold text-xs hover:bg-primary/5 transition">
+                    <span>Lihat Seluruh Koleksi Template Formasi</span>
+                    <span>&rarr;</span>
+                </a>
             </div>
         </div>
     </section>
 
-    <!-- Workflow Section -->
-    <section id="workflow" class="py-20 border-t border-slate-800/80 relative">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center max-w-2xl mx-auto mb-16">
-                <span class="text-xs font-bold tracking-widest text-indigo-400 uppercase">Alur Pembuatan</span>
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2 font-heading">
-                    Tiga Langkah Menuju CV Impian
-                </h2>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div class="relative p-6">
-                    <div class="w-16 h-16 rounded-2xl bg-indigo-600/20 text-indigo-400 font-extrabold text-2xl flex items-center justify-center mx-auto mb-4 border border-indigo-500/30 font-heading">
-                        01
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2 font-heading">Daftarkan Akun</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Buat akun gratis menggunakan email Anda dengan perlindungan enkripsi kata sandi standar Laravel Breeze.
-                    </p>
-                </div>
-
-                <div class="relative p-6">
-                    <div class="w-16 h-16 rounded-2xl bg-violet-600/20 text-violet-400 font-extrabold text-2xl flex items-center justify-center mx-auto mb-4 border border-violet-500/30 font-heading">
-                        02
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2 font-heading">Isi Biodata & Unggah Foto</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Lengkapi headline karir, nomor kontak publik, ringkasan keahlian, dan unggah foto formal berukuran maksimal 2MB.
-                    </p>
-                </div>
-
-                <div class="relative p-6">
-                    <div class="w-16 h-16 rounded-2xl bg-emerald-600/20 text-emerald-400 font-extrabold text-2xl flex items-center justify-center mx-auto mb-4 border border-emerald-500/30 font-heading">
-                        03
-                    </div>
-                    <h3 class="text-lg font-bold text-white mb-2 font-heading">Simpan & Siap Digunakan</h3>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Data langsung tersimpan via operasi updateOrCreate dan siap dipadukan dengan riwayat pendidikan & pengalaman.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- FAQ Section -->
-    <section id="faq" class="py-20 border-t border-slate-800/80 bg-slate-900/30">
+    <!-- Section 4: FAQ Singkat -->
+    <section class="py-12 lg:py-16 bg-slate-50 border-t border-slate-200">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <span class="text-xs font-bold tracking-widest text-indigo-400 uppercase">Tanya Jawab</span>
-                <h2 class="text-3xl font-extrabold text-white mt-2 font-heading">Pertanyaan yang Sering Diajukan</h2>
-            </div>
-
-            <div class="space-y-4">
-                <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800">
-                    <h4 class="text-base font-bold text-white font-heading">Apakah data profil saya dapat diedit kapan saja?</h4>
-                    <p class="text-sm text-slate-400 mt-2">
-                        Ya. Sistem menggunakan mekanisme updateOrCreate sehingga setiap kali Anda memperbarui form biodata di `/cv-profile`, data yang tersimpan akan diperbarui tanpa membuat duplikat akun.
-                    </p>
-                </div>
-                <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800">
-                    <h4 class="text-base font-bold text-white font-heading">Bagaimana pengelolaan file foto profil dilakukan?</h4>
-                    <p class="text-sm text-slate-400 mt-2">
-                        Foto disimpan pada storage publik terlindung. Saat Anda mengunggah foto baru, sistem secara otomatis menghapus file foto lama dari storage server untuk menjaga kebersihan data.
-                    </p>
-                </div>
-                <div class="p-6 rounded-2xl bg-slate-900/80 border border-slate-800">
-                    <h4 class="text-base font-bold text-white font-heading">Apa saja format gambar yang didukung?</h4>
-                    <p class="text-sm text-slate-400 mt-2">
-                        Format yang didukung adalah JPG, JPEG, dan PNG dengan batas ukuran berkas maksimum 2048 KB (2 MB).
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Bottom CTA Banner -->
-    <section class="py-16 border-t border-slate-800/80 relative overflow-hidden">
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="p-10 sm:p-14 rounded-3xl bg-gradient-to-r from-indigo-900/60 via-slate-900 to-violet-900/60 border border-indigo-500/30 shadow-2xl relative">
-                <h2 class="text-3xl sm:text-4xl font-extrabold text-white font-heading">
-                    Siap Membuka Peluang Karir Baru Anda?
+            <div class="text-center mb-8">
+                <h2 class="text-2xl lg:text-3xl font-extrabold text-slate-800 tracking-wide uppercase">
+                    PERTANYAAN UMUM (FAQ)
                 </h2>
-                <p class="mt-4 text-slate-300 text-sm sm:text-base max-w-xl mx-auto">
-                    Bergabunglah bersama ribuan pencari kerja lainnya dan buat CV profesional Anda sekarang juga.
+                <div class="w-16 h-1 bg-primary mx-auto mt-2.5 rounded-full"></div>
+                <p class="text-xs sm:text-sm text-slate-500 mt-2">
+                    Jawaban seputar kendala pendaftaran, format berkas, dan prosedur pengunduhan.
                 </p>
-                <div class="mt-8">
-                    @auth
-                        <a href="{{ route('cv-profile.edit') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition">
-                            {{ __('Buka Formulir Biodata CV') }} →
-                        </a>
-                    @else
-                        <a href="{{ route('register') }}" class="inline-flex items-center px-8 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-lg shadow-indigo-600/30 transition">
-                            {{ __('Daftar Sekarang - Gratis!') }} →
-                        </a>
-                    @endauth
+            </div>
+
+            <div class="space-y-3" x-data="{ openFaq: 1 }">
+                <!-- FAQ 1 -->
+                <div class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                    <button type="button" 
+                            @click="openFaq = (openFaq === 1 ? null : 1)"
+                            class="w-full p-4 text-left font-bold text-sm text-slate-900 flex items-center justify-between">
+                        <span>Apakah pembuatan CV di portal LaraCV dipungut biaya?</span>
+                        <span class="text-primary text-base" x-text="openFaq === 1 ? '−' : '+'"></span>
+                    </button>
+                    <div x-show="openFaq === 1" class="p-4 pt-0 text-xs text-slate-600 border-t border-slate-100 leading-relaxed">
+                        Layanan pembuatan CV di portal LaraCV bersifat 100% gratis tanpa biaya tersembunyi. Anda dapat mengisi data, memilih template, dan mengunduh berkas PDF kapan saja.
+                    </div>
                 </div>
+
+                <!-- FAQ 2 -->
+                <div class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                    <button type="button" 
+                            @click="openFaq = (openFaq === 2 ? null : 2)"
+                            class="w-full p-4 text-left font-bold text-sm text-slate-900 flex items-center justify-between">
+                        <span>Apakah template CV yang disediakan kompatibel dengan mesin seleksi ATS?</span>
+                        <span class="text-primary text-base" x-text="openFaq === 2 ? '−' : '+'"></span>
+                    </button>
+                    <div x-show="openFaq === 2" class="p-4 pt-0 text-xs text-slate-600 border-t border-slate-100 leading-relaxed">
+                        Ya. Seluruh template dirancang dengan spesifikasi hierarki heading standar dan font terbaca sistem sehingga terjamin ramah terhadap algoritma Applicant Tracking System (ATS).
+                    </div>
+                </div>
+
+                <!-- FAQ 3 -->
+                <div class="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+                    <button type="button" 
+                            @click="openFaq = (openFaq === 3 ? null : 3)"
+                            class="w-full p-4 text-left font-bold text-sm text-slate-900 flex items-center justify-between">
+                        <span>Bagaimana cara mengedit kembali data yang sudah saya simpan?</span>
+                        <span class="text-primary text-base" x-text="openFaq === 3 ? '−' : '+'"></span>
+                    </button>
+                    <div x-show="openFaq === 3" class="p-4 pt-0 text-xs text-slate-600 border-t border-slate-100 leading-relaxed">
+                        Cukup masuk ke akun Anda, buka halaman Dashboard, lalu pilih modul data yang ingin diperbarui (Biodata, Pengalaman, Pendidikan, atau Keahlian). Perubahan akan otomatis tersimpan.
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 text-center">
+                <a href="{{ route('faq') }}" class="text-xs font-bold text-primary hover:underline">
+                    Buka Halaman FAQ Lengkap &rarr;
+                </a>
             </div>
         </div>
     </section>
-
-    <!-- Footer -->
-    <footer class="py-10 border-t border-slate-900 bg-slate-950 text-slate-500 text-xs text-center">
-        <div class="max-w-7xl mx-auto px-4">
-            <p>&copy; {{ date('Y') }} LaraCV (Online CV Builder Platform). Dikembangkan sesuai Fondasi Fase 1.</p>
-        </div>
-    </footer>
-
-</body>
-</html>
+</x-public-layout>

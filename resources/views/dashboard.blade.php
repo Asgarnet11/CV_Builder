@@ -2,26 +2,26 @@
     <x-slot name="header">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/50 dark:border-indigo-800/50 text-indigo-600 dark:text-indigo-400 text-xs font-bold tracking-wide uppercase mb-1">
+                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 text-primary dark:text-primary-light text-xs font-bold tracking-wide uppercase mb-1">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                     CV Studio Dashboard
                 </div>
                 <h2 class="font-extrabold text-2xl sm:text-3xl text-slate-900 dark:text-white tracking-tight">
-                    {{ __('Selamat Datang, ') }} <span class="bg-gradient-to-r from-indigo-600 via-violet-600 to-pink-600 bg-clip-text text-transparent">{{ Auth::user()->name }}</span>
+                    {{ __('Selamat Datang, ') }} <span class="bg-gradient-to-r from-primary-dark via-primary to-accent bg-clip-text text-transparent">{{ Auth::user()->name }}</span>
                 </h2>
                 <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
                     {{ __('Kelola dan optimalkan resume profesional Anda untuk peluang karir impian.') }}
                 </p>
             </div>
             <div class="flex flex-wrap items-center gap-2.5">
-                <a href="{{ route('cv-preview.show') }}" class="inline-flex items-center px-4 py-2.5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs rounded-xl shadow-sm transition hover:shadow hover:-translate-y-0.5">
-                    <svg class="w-4 h-4 mr-1.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ route('cv-preview.show') }}" class="inline-flex items-center px-4 py-2.5 bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white font-bold text-xs rounded-lg shadow-sm transition hover:shadow hover:-translate-y-0.5">
+                    <svg class="w-4 h-4 mr-1.5 text-primary-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.164 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
                     </svg>
                     {{ __('Pratinjau CV') }}
                 </a>
-                <a href="{{ route('cv-profile.edit') }}" class="inline-flex items-center px-4 py-2.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-500/25 transition hover:shadow-indigo-500/40 hover:-translate-y-0.5">
+                <a href="{{ route('cv-profile.edit') }}" class="inline-flex items-center px-4 py-2.5 bg-primary hover:bg-primary-dark text-white font-bold text-xs rounded-lg shadow-md shadow-primary/25 transition hover:shadow-primary/40 hover:-translate-y-0.5">
                     <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                     </svg>
@@ -48,35 +48,35 @@
                 if ($skillsCount > 0) $completeness += 25;
             @endphp
 
-            <!-- Hero Welcome Card with Glassmorphic Gradient & Progress Track -->
-            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-7 sm:p-10 shadow-xl border border-indigo-500/20">
+            <!-- Hero Welcome Card with SSCASN Gradient & Progress Track -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-hero text-white p-7 sm:p-10 shadow-xl border border-white/20">
                 <!-- Background Ambient Glows -->
-                <div class="absolute -right-16 -top-16 w-96 h-96 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none"></div>
-                <div class="absolute -left-16 -bottom-16 w-96 h-96 rounded-full bg-violet-600/20 blur-3xl pointer-events-none"></div>
-                <div class="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
+                <div class="absolute -right-16 -top-16 w-96 h-96 rounded-full bg-white/10 blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-16 -bottom-16 w-96 h-96 rounded-full bg-black/10 blur-3xl pointer-events-none"></div>
+                <div class="absolute inset-0 bg-[radial-gradient(#ffffff15_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none"></div>
 
                 <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                     <div class="space-y-4 max-w-2xl">
-                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-indigo-200 text-xs font-semibold">
-                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-xs font-semibold">
+                            <span class="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
                             <span>Sistem CV Cerdas & Ekspor Multi-Format</span>
                         </div>
                         <h3 class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight">
                             Buat Resume Standar Industri dalam Hitungan Menit
                         </h3>
-                        <p class="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl">
+                        <p class="text-white/85 text-xs sm:text-sm leading-relaxed max-w-xl">
                             LaraCV menyediakan format standar ATS, ringkasan AI interaktif, pemilihan palet warna tema, serta unduhan PDF, Word, dan JSON Resume.
                         </p>
 
                         <!-- Quick Action Pills -->
                         <div class="pt-2 flex flex-wrap items-center gap-3">
-                            <a href="{{ route('cv-preview.show') }}" class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-indigo-600/30 transition hover:-translate-y-0.5">
+                            <a href="{{ route('cv-preview.show') }}" class="inline-flex items-center px-4 py-2 bg-white text-primary-dark hover:bg-slate-100 font-bold text-xs rounded-lg shadow-lg transition hover:-translate-y-0.5">
                                 <span>Lihat Pratinjau Dokumen</span>
                                 <svg class="w-3.5 h-3.5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
                             </a>
                             @if ($hasProfile && $profile->slug)
-                                <a href="{{ route('public.cv', ['slug' => $profile->slug]) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-white/10 hover:bg-white/20 text-white font-bold text-xs rounded-xl border border-white/15 backdrop-blur-md transition hover:-translate-y-0.5">
-                                    <svg class="w-3.5 h-3.5 mr-1.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                <a href="{{ route('public.cv', ['slug' => $profile->slug]) }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-white/15 hover:bg-white/25 text-white font-bold text-xs rounded-lg border border-white/20 backdrop-blur-md transition hover:-translate-y-0.5">
+                                    <svg class="w-3.5 h-3.5 mr-1.5 text-emerald-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
                                     <span>Buka Tautan Publik</span>
                                 </a>
                             @endif
@@ -84,45 +84,45 @@
                     </div>
 
                     <!-- Progress Gauge Box -->
-                    <div class="shrink-0 bg-white/10 backdrop-blur-xl rounded-2xl p-6 border border-white/15 text-center min-w-[240px] shadow-lg">
+                    <div class="shrink-0 bg-white/15 backdrop-blur-xl rounded-2xl p-6 border border-white/20 text-center min-w-[240px] shadow-lg">
                         <div class="flex items-center justify-between gap-4 mb-2">
-                            <span class="text-xs uppercase tracking-wider text-slate-300 font-bold">Kelengkapan CV</span>
-                            <span class="text-sm font-extrabold text-white px-2 py-0.5 rounded-full bg-indigo-500/40 border border-indigo-400/30">
+                            <span class="text-xs uppercase tracking-wider text-white/80 font-bold">Kelengkapan CV</span>
+                            <span class="text-sm font-extrabold text-white px-2 py-0.5 rounded-full bg-white/20 border border-white/30">
                                 {{ $completeness }}%
                             </span>
                         </div>
 
                         <!-- Progress Bar -->
-                        <div class="w-full bg-white/15 rounded-full h-3 mb-4 overflow-hidden p-0.5 border border-white/10">
-                            <div class="bg-gradient-to-r from-indigo-400 via-violet-400 to-emerald-400 h-full rounded-full transition-all duration-500" style="width: {{ $completeness }}%"></div>
+                        <div class="w-full bg-black/20 rounded-full h-3 mb-4 overflow-hidden p-0.5 border border-white/20">
+                            <div class="bg-gradient-to-r from-emerald-400 to-white h-full rounded-full transition-all duration-500" style="width: {{ $completeness }}%"></div>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-2 text-left text-[11px] text-slate-300">
+                        <div class="grid grid-cols-2 gap-2 text-left text-[11px] text-white/90">
                             <div class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full {{ $hasProfile ? 'bg-emerald-400' : 'bg-slate-500' }}"></span>
+                                <span class="w-2 h-2 rounded-full {{ $hasProfile ? 'bg-emerald-300' : 'bg-white/40' }}"></span>
                                 <span>Biodata</span>
                             </div>
                             <div class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full {{ $expCount > 0 ? 'bg-emerald-400' : 'bg-slate-500' }}"></span>
+                                <span class="w-2 h-2 rounded-full {{ $expCount > 0 ? 'bg-emerald-300' : 'bg-white/40' }}"></span>
                                 <span>Pengalaman</span>
                             </div>
                             <div class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full {{ $eduCount > 0 ? 'bg-emerald-400' : 'bg-slate-500' }}"></span>
+                                <span class="w-2 h-2 rounded-full {{ $eduCount > 0 ? 'bg-emerald-300' : 'bg-white/40' }}"></span>
                                 <span>Pendidikan</span>
                             </div>
                             <div class="flex items-center gap-1.5">
-                                <span class="w-2 h-2 rounded-full {{ $skillsCount > 0 ? 'bg-emerald-400' : 'bg-slate-500' }}"></span>
+                                <span class="w-2 h-2 rounded-full {{ $skillsCount > 0 ? 'bg-emerald-300' : 'bg-white/40' }}"></span>
                                 <span>Keahlian</span>
                             </div>
                         </div>
 
                         @if ($completeness === 100)
-                            <div class="mt-4 pt-3 border-t border-white/10 text-emerald-400 font-bold text-xs flex items-center justify-center gap-1">
+                            <div class="mt-4 pt-3 border-t border-white/20 text-emerald-300 font-bold text-xs flex items-center justify-center gap-1">
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
                                 <span>CV Anda Sudah Siap Digunakan!</span>
                             </div>
                         @else
-                            <div class="mt-4 pt-3 border-t border-white/10 text-amber-300 font-medium text-[11px]">
+                            <div class="mt-4 pt-3 border-t border-white/20 text-amber-200 font-medium text-[11px]">
                                 Lengkapi sisa bagian untuk memaksimalkan daya tarik CV
                             </div>
                         @endif
@@ -441,19 +441,19 @@
             </div>
 
             <!-- Pro Features Banner (AI Assistant, Multi-Format, Live Sharing) -->
-            <div class="rounded-3xl bg-gradient-to-r from-indigo-900 via-indigo-800 to-violet-900 text-white p-6 sm:p-8 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-                <div class="absolute -right-10 -bottom-10 w-64 h-64 rounded-full bg-white/5 blur-2xl pointer-events-none"></div>
+            <div class="rounded-3xl bg-gradient-hero text-white p-6 sm:p-8 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                <div class="absolute -right-10 -bottom-10 w-64 h-64 rounded-full bg-white/10 blur-2xl pointer-events-none"></div>
                 <div class="space-y-2 max-w-2xl relative z-10">
-                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-indigo-200 text-[11px] font-bold">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[11px] font-bold">
                         <span>⚡ Fitur Unggulan Aktif</span>
                     </div>
                     <h4 class="text-lg sm:text-xl font-bold">AI Resume Assistant & Ekspor Lengkap Siap Digunakan</h4>
-                    <p class="text-xs sm:text-sm text-indigo-200 leading-relaxed">
+                    <p class="text-xs sm:text-sm text-white/90 leading-relaxed">
                         Manfaatkan asisten AI cerdas untuk menyempurnakan ringkasan profesional, kustomisasi palet warna tema, serta unduh langsung ke format PDF, Microsoft Word (.doc), atau JSON Resume.
                     </p>
                 </div>
                 <div class="relative z-10 flex items-center gap-3 shrink-0">
-                    <a href="{{ route('cv-profile.edit') }}" class="px-5 py-2.5 rounded-xl bg-white text-indigo-950 font-extrabold text-xs shadow-md hover:bg-slate-100 transition hover:-translate-y-0.5">
+                    <a href="{{ route('cv-profile.edit') }}" class="px-5 py-2.5 rounded-lg bg-white text-primary-dark font-extrabold text-xs shadow-md hover:bg-slate-100 transition hover:-translate-y-0.5">
                         Coba AI Assistant
                     </a>
                 </div>

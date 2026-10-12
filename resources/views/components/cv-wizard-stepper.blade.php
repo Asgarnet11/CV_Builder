@@ -59,12 +59,12 @@
     $percent = round(($completed / 4) * 100);
 @endphp
 
-<div class="mb-8 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800/80 p-5 sm:p-6 transition-all">
+<div class="mb-8 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-2xl shadow-sm border border-sky-100 dark:border-slate-800 p-5 sm:p-6 transition-all">
     <!-- Header with progress bar -->
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
         <div>
             <h3 class="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                <span class="w-2 h-2 rounded-full bg-primary"></span>
                 {{ __('Alur Penyusunan CV Terstandar') }}
             </h3>
             <p class="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
@@ -73,9 +73,9 @@
         </div>
         <div class="flex items-center gap-3 self-start sm:self-auto">
             <div class="w-32 sm:w-44 bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
-                <div class="bg-gradient-to-r from-indigo-500 via-indigo-600 to-violet-600 h-2 rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
+                <div class="bg-gradient-to-r from-primary-dark via-primary-mid to-primary h-2 rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
             </div>
-            <span class="text-xs font-extrabold text-indigo-600 dark:text-indigo-400 min-w-[45px] text-right">
+            <span class="text-xs font-extrabold text-primary min-w-[45px] text-right">
                 {{ $percent }}%
             </span>
         </div>
@@ -88,29 +88,29 @@
                 $isActive = $current === $step['id'];
             @endphp
             <a href="{{ $step['route'] }}" 
-               class="group relative flex flex-col p-3.5 rounded-2xl border transition-all duration-200 hover:-translate-y-0.5 {{ $isActive 
-                    ? 'bg-gradient-to-b from-indigo-50/90 to-white dark:from-indigo-950/50 dark:to-slate-900/80 border-indigo-500 shadow-md shadow-indigo-500/10 ring-2 ring-indigo-500/20' 
+               class="group relative flex flex-col p-3.5 rounded-xl border transition-all duration-200 hover:-translate-y-0.5 {{ $isActive 
+                    ? 'bg-gradient-to-b from-sky-50 to-white dark:from-slate-800 dark:to-slate-900 border-primary shadow-sm ring-2 ring-primary/20' 
                     : ($step['done']
                         ? 'bg-white dark:bg-slate-900/60 border-emerald-200 dark:border-emerald-900/50 hover:border-emerald-400 hover:shadow-sm'
                         : 'bg-white dark:bg-slate-900/40 border-slate-200/80 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 hover:shadow-sm') }}">
                 
                 <div class="flex items-center justify-between mb-2">
-                    <div class="w-7 h-7 rounded-xl flex items-center justify-center transition-colors {{ $isActive 
-                        ? 'bg-indigo-600 text-white shadow-sm' 
-                        : ($step['done'] ? 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:text-indigo-600') }}">
+                    <div class="w-7 h-7 rounded-lg flex items-center justify-center transition-colors {{ $isActive 
+                        ? 'bg-primary text-white shadow-sm' 
+                        : ($step['done'] ? 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400' : 'bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:text-primary') }}">
                         {!! $step['icon'] !!}
                     </div>
 
                     @if ($step['done'])
                         <span class="w-4 h-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-bold shadow-sm" title="Sudah terisi">✓</span>
                     @elseif ($isActive)
-                        <span class="w-2 h-2 rounded-full bg-indigo-500 animate-ping"></span>
+                        <span class="w-2 h-2 rounded-full bg-primary animate-ping"></span>
                     @else
                         <span class="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700"></span>
                     @endif
                 </div>
 
-                <div class="font-heading font-bold text-xs {{ $isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400' }}">
+                <div class="font-bold text-xs {{ $isActive ? 'text-primary' : 'text-slate-800 dark:text-slate-200 group-hover:text-primary' }}">
                     {{ $step['name'] }}
                 </div>
                 <span class="text-[11px] text-slate-400 dark:text-slate-500 truncate mt-0.5">

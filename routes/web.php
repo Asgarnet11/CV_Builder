@@ -12,6 +12,11 @@ use App\Http\Controllers\SkillController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/templates', [HomeController::class, 'templates'])->name('templates');
+Route::get('/faq', [HomeController::class, 'faq'])->name('faq');
+Route::get('/panduan', [HomeController::class, 'panduan'])->name('panduan');
+Route::get('/bantuan', [HomeController::class, 'bantuan'])->name('bantuan');
+Route::post('/bantuan', [HomeController::class, 'submitBantuan'])->name('bantuan.submit');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

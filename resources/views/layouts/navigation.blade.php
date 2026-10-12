@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="backdrop-blur-xl bg-white/80 dark:bg-slate-900/80 border-b border-slate-200/60 dark:border-slate-800/60 sticky top-0 z-40">
+<nav x-data="{ open: false }" class="backdrop-blur-xl bg-white/90 dark:bg-slate-900/90 border-b border-sky-100 dark:border-slate-800 sticky top-0 z-40">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -6,14 +6,14 @@
                 <!-- Brand Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}" class="flex items-center gap-2.5 group">
-                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-violet-500 flex items-center justify-center shadow-md shadow-indigo-500/25 group-hover:scale-105 transition duration-200">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary-dark via-primary-mid to-primary flex items-center justify-center shadow-md shadow-primary/25 group-hover:scale-105 transition duration-200">
                             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
                         </div>
                         <div class="flex items-center">
-                            <span class="text-xl font-black tracking-tight text-gray-900 dark:text-white font-heading">Lara<span class="text-indigo-600 dark:text-indigo-400">CV</span></span>
-                            <span class="hidden md:inline-block ml-2 px-1.5 py-0.5 text-[9px] uppercase font-bold tracking-wider bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 rounded">Pro</span>
+                            <span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white">Lara<span class="text-primary">CV</span></span>
+                            <span class="hidden md:inline-block ml-2 px-1.5 py-0.5 text-[9px] uppercase font-bold tracking-wider bg-primary/10 text-primary border border-primary/20 rounded">PRO</span>
                         </div>
                     </a>
                 </div>
@@ -21,27 +21,27 @@
                 <!-- Navigation Links -->
                 <div class="hidden lg:flex items-center space-x-1">
                     <a href="{{ route('dashboard') }}" 
-                       class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('dashboard') ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-extrabold shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }}">
+                       class="px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('dashboard') ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }}">
                         <span>Dashboard</span>
                     </a>
                     <a href="{{ route('cv-profile.edit') }}" 
-                       class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('cv-profile.*') ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-extrabold shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }}">
+                       class="px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('cv-profile.*') ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }}">
                         <span>Biodata</span>
                     </a>
                     <a href="{{ route('experience.index') }}" 
-                       class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('experience.*') ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-extrabold shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }}">
+                       class="px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('experience.*') ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }}">
                         <span>Pengalaman</span>
                     </a>
                     <a href="{{ route('education.index') }}" 
-                       class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('education.*') ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-extrabold shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }}">
+                       class="px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('education.*') ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }}">
                         <span>Pendidikan</span>
                     </a>
                     <a href="{{ route('skills.index') }}" 
-                       class="px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('skills.*') ? 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-extrabold shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }}">
+                       class="px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('skills.*') ? 'bg-primary/10 text-primary border border-primary/20 shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }}">
                         <span>Keahlian</span>
                     </a>
                     <a href="{{ route('cv-preview.show') }}" 
-                       class="ml-2 px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('cv-preview.*') ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md shadow-indigo-500/25' : 'bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800/60' }}">
+                       class="ml-2 px-3.5 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 {{ request()->routeIs('cv-preview.*') ? 'bg-primary text-white shadow-md shadow-primary/25' : 'bg-primary/10 hover:bg-primary/20 text-primary border border-primary/30' }}">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         <span>Pratinjau CV</span>
                     </a>
