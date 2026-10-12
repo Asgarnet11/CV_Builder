@@ -89,6 +89,11 @@
     <div class="py-10 bg-slate-100 dark:bg-slate-900 min-h-screen">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
 
+            <!-- Guided Workflow Stepper -->
+            <div class="print:hidden">
+                <x-cv-wizard-stepper current="preview" />
+            </div>
+
             <!-- Template Switcher Bar -->
             <div class="print:hidden bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div class="flex items-center gap-2">

@@ -21,6 +21,9 @@
     <div class="py-10">
         <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
+            <!-- Guided Workflow Stepper -->
+            <x-cv-wizard-stepper current="experience" />
+
 
             <div class="flex justify-end">
                 <a href="{{ route('experience.create') }}" class="inline-flex items-center px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md transition">

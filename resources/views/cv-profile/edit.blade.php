@@ -18,10 +18,65 @@
         </div>
     </x-slot>
 
-    <div class="py-10">
-        <div class="max-w-5xl mx-auto sm:px-6 lg:px-8 space-y-6">
+    <div class="py-10" x-data="{
+        splitPreview: false,
+        saveStatus: '',
+        timeout: null,
+        autoSave() {
+            clearTimeout(this.timeout);
+            this.saveStatus = 'Menyimpan...';
+            this.timeout = setTimeout(() => {
+                const form = document.getElementById('cv-profile-form');
+                if (!form) return;
+                let formData = new FormData(form);
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    this.saveStatus = 'Tersimpan';
+                    if (this.splitPreview && this.$refs.previewFrame) {
+                        this.$refs.previewFrame.contentWindow.location.reload();
+                    }
+                    setTimeout(() => this.saveStatus = '', 3000);
+                })
+                .catch(error => {
+                    this.saveStatus = 'Gagal menyimpan';
+                });
+            }, 1000);
+        }
+    }">
+        <div :class="splitPreview ? 'max-w-7xl' : 'max-w-5xl'" class="mx-auto sm:px-6 lg:px-8 space-y-6 transition-all duration-300">
 
+            <!-- Guided Workflow Stepper -->
+            <x-cv-wizard-stepper current="profile" />
 
+            <!-- Subheader Bar with Split Preview Toggle -->
+            <div class="flex items-center justify-between">
+                <button type="button" 
+                        @click="splitPreview = !splitPreview"
+                        :class="splitPreview ? 'bg-indigo-600 text-white shadow-md' : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'"
+                        class="hidden lg:inline-flex items-center px-4 py-2 text-xs font-bold rounded-xl transition shadow-sm">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"></path>
+                    </svg>
+                    <span x-text="splitPreview ? 'Tutup Pratinjau Samping' : '👁️ Buka Pratinjau Samping (Split Live Preview)'"></span>
+                </button>
+                <div class="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1.5 ml-auto">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Penyimpanan otomatis aktif</span>
+                </div>
+            </div>
+
+            <!-- Two Columns on Split Mode -->
+            <div :class="splitPreview ? 'grid grid-cols-1 lg:grid-cols-12 gap-8 items-start' : ''">
+                <!-- Form Column -->
+                <div :class="splitPreview ? 'lg:col-span-7 space-y-6' : 'space-y-6'">
 
             <!-- Validation Errors Summary -->
             @if ($errors->any())
@@ -40,34 +95,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="{{ route('cv-profile.update') }}" enctype="multipart/form-data" class="space-y-6"
-                  x-data="{
-                      saveStatus: '',
-                      timeout: null,
-                      autoSave() {
-                          clearTimeout(this.timeout);
-                          this.saveStatus = 'Menyimpan...';
-                          this.timeout = setTimeout(() => {
-                              let formData = new FormData(this.$el);
-                              fetch(this.$el.action, {
-                                  method: 'POST',
-                                  headers: {
-                                      'X-Requested-With': 'XMLHttpRequest',
-                                      'Accept': 'application/json'
-                                  },
-                                  body: formData
-                              })
-                              .then(response => response.json())
-                              .then(data => {
-                                  this.saveStatus = 'Tersimpan';
-                                  setTimeout(() => this.saveStatus = '', 3000);
-                              })
-                              .catch(error => {
-                                  this.saveStatus = 'Gagal menyimpan';
-                              });
-                          }, 1000);
-                      }
-                  }"
+            <form id="cv-profile-form" method="POST" action="{{ route('cv-profile.update') }}" enctype="multipart/form-data" class="space-y-6"
                   @input="autoSave"
                   @change="autoSave"
             >
@@ -600,6 +628,39 @@
                     </button>
                 </div>
             </form>
+
+                </div>
+                <!-- End Form Column -->
+
+                <!-- Sticky Live Preview Column -->
+                <div x-show="splitPreview" 
+                     style="display: none;"
+                     class="hidden lg:block lg:col-span-5 sticky top-8 self-start space-y-4"
+                     x-transition.opacity>
+                    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col h-[850px]">
+                        <div class="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Live Preview CV</span>
+                            </div>
+                            <div class="flex items-center space-x-2 text-xs">
+                                <button type="button" @click="$refs.previewFrame.contentWindow.location.reload()" class="text-indigo-300 hover:text-white transition flex items-center gap-1 font-semibold">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                    Segarkan
+                                </button>
+                                <a href="{{ route('cv-preview.show') }}" target="_blank" class="text-indigo-300 hover:text-white ml-2 flex items-center gap-1 font-semibold">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                                    Buka Penuh
+                                </a>
+                            </div>
+                        </div>
+                        <div class="flex-1 bg-slate-100 dark:bg-slate-900 overflow-hidden relative">
+                            <iframe x-ref="previewFrame" src="{{ route('cv-preview.show') }}" class="w-full h-full border-0"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Two Columns -->
 
         </div>
     </div>
