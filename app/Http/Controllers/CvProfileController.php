@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CvProfileUpdateRequest;
 use App\Models\CvProfile;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -52,5 +53,42 @@ class CvProfileController extends Controller
         }
 
         return redirect()->route('cv-profile.edit')->with('status', 'Biodata CV berhasil disimpan!');
+    }
+
+    /**
+     * Upload and update cropped photo via AJAX.
+     */
+    public function updatePhoto(Request $request): JsonResponse
+    {
+        $request->validate([
+            'photo_base64' => 'required|string',
+        ]);
+
+        $user = $request->user();
+        $profile = $user->cvProfile ?? $user->cvProfile()->create();
+
+        try {
+            $image_parts = explode(';base64,', $request->photo_base64);
+            $image_type_aux = explode('image/', $image_parts[0]);
+            $image_type = $image_type_aux[1];
+            $image_base64 = base64_decode($image_parts[1]);
+
+            $filename = 'photos/'.uniqid().'.'.$image_type;
+
+            if ($profile->photo && Storage::disk('public')->exists($profile->photo)) {
+                Storage::disk('public')->delete($profile->photo);
+            }
+
+            Storage::disk('public')->put($filename, $image_base64);
+
+            $profile->update(['photo' => $filename]);
+
+            return response()->json([
+                'status' => 'success',
+                'photo_url' => asset('storage/'.$filename),
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
     }
 }
