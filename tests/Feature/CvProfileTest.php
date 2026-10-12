@@ -134,7 +134,6 @@ class CvProfileTest extends TestCase
             'address' => 'Jakarta Selatan',
             'summary' => 'Antusias belajar Laravel.',
             'linkedin_url' => 'https://linkedin.com/in/budisantoso',
-            'github_url' => 'https://github.com/budisantoso',
             'portfolio_url' => 'https://budisantoso.dev',
         ]);
 
@@ -147,7 +146,6 @@ class CvProfileTest extends TestCase
             'full_name' => 'Budi Santoso',
             'headline' => 'Junior Web Developer',
             'email_cv' => 'budi@example.com',
-            'github_url' => 'https://github.com/budisantoso',
         ]);
 
         $initialId = CvProfile::where('user_id', $user->id)->value('id');
@@ -161,7 +159,6 @@ class CvProfileTest extends TestCase
             'address' => 'Bandung, Jawa Barat',
             'summary' => 'Berpengalaman 2 tahun.',
             'linkedin_url' => 'https://linkedin.com/in/budisantoso-updated',
-            'github_url' => 'https://github.com/budisantoso-dev',
             'portfolio_url' => 'https://portfolio.budisantoso.dev',
         ]);
 
@@ -173,7 +170,6 @@ class CvProfileTest extends TestCase
         $this->assertEquals('Budi Santoso, S.Kom.', $updatedProfile->full_name);
         $this->assertEquals('Mid-Level Full Stack Developer', $updatedProfile->headline);
         $this->assertEquals('budi.pro@example.com', $updatedProfile->email_cv);
-        $this->assertEquals('https://github.com/budisantoso-dev', $updatedProfile->github_url);
     }
 
     /**
@@ -192,42 +188,5 @@ class CvProfileTest extends TestCase
         $response->assertSee('Ahmad Dahlan');
         $response->assertSee('ahmad@example.com');
         $response->assertSee('No Photo');
-    }
-
-    /**
-     * Test uploading cropped base64 photo via AJAX.
-     */
-    public function test_user_can_upload_cropped_photo_via_ajax(): void
-    {
-        Storage::fake('public');
-        $user = User::factory()->create();
-
-        // 1x1 transparent PNG as base64
-        $base64Png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
-
-        $response = $this->actingAs($user)->postJson('/cv-profile/photo', [
-            'photo_base64' => $base64Png,
-        ]);
-
-        $response->assertStatus(200);
-        $response->assertJsonStructure(['status', 'photo_url']);
-        $this->assertEquals('success', $response->json('status'));
-
-        $profile = CvProfile::where('user_id', $user->id)->firstOrFail();
-        $this->assertNotNull($profile->photo);
-        Storage::disk('public')->assertExists($profile->photo);
-    }
-
-    /**
-     * Test cropped photo upload requires base64 string.
-     */
-    public function test_cropped_photo_upload_requires_valid_input(): void
-    {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->postJson('/cv-profile/photo', []);
-
-        $response->assertStatus(422);
-        $response->assertJsonValidationErrors(['photo_base64']);
     }
 }

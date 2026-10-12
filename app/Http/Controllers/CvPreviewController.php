@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\CvLanguageService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -24,15 +23,10 @@ class CvPreviewController extends Controller
             'skills' => fn ($q) => $q->orderBy('order_index')->orderBy('skill_name'),
         ]);
         $template = $request->query('template', 'modern');
+
         if (! in_array($template, ['modern', 'classic', 'minimal'], true)) {
             $template = 'modern';
         }
-
-        $lang = $request->query('lang', 'id');
-        if (! in_array($lang, ['id', 'en'], true)) {
-            $lang = 'id';
-        }
-        $labels = CvLanguageService::get($lang);
 
         return view('cv-preview.show', [
             'user' => $user,
@@ -41,8 +35,6 @@ class CvPreviewController extends Controller
             'experiences' => $user->experiences,
             'skills' => $user->skills,
             'template' => $template,
-            'lang' => $lang,
-            'labels' => $labels,
         ]);
     }
 
@@ -59,15 +51,10 @@ class CvPreviewController extends Controller
         ]);
         $profile = $user->cvProfile;
         $template = $request->query('template', 'modern');
+
         if (! in_array($template, ['modern', 'classic', 'minimal'], true)) {
             $template = 'modern';
         }
-
-        $lang = $request->query('lang', 'id');
-        if (! in_array($lang, ['id', 'en'], true)) {
-            $lang = 'id';
-        }
-        $labels = CvLanguageService::get($lang);
 
         $photoBase64 = null;
         if ($profile && $profile->photo && Storage::disk('public')->exists($profile->photo)) {
@@ -91,8 +78,6 @@ class CvPreviewController extends Controller
             'experiences' => $user->experiences,
             'skills' => $user->skills,
             'template' => $template,
-            'lang' => $lang,
-            'labels' => $labels,
         ]);
 
         $pdf->setPaper('a4', 'portrait');

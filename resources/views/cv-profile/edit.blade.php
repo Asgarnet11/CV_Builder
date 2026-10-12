@@ -326,28 +326,15 @@
                             <x-input-error class="mt-2" :messages="$errors->get('linkedin_url')" />
                         </div>
 
-                        <!-- GitHub URL -->
-                        <div>
-                            <x-input-label for="github_url" :value="__('Tautan GitHub')" />
-                            <x-text-input id="github_url" 
-                                          name="github_url" 
-                                          type="url" 
-                                          class="mt-1 block w-full rounded-xl" 
-                                          :value="old('github_url', $profile?->github_url ?? '')" 
-                                          placeholder="https://github.com/username" />
-                            <x-input-error class="mt-2" :messages="$errors->get('github_url')" />
-                        </div>
-
                         <!-- Portfolio URL -->
                         <div>
-                            <x-input-label for="portfolio_url" :value="__('Tautan Portofolio / Website')" />
+                            <x-input-label for="portfolio_url" :value="__('Tautan Portofolio / GitHub / Website')" />
                             <x-text-input id="portfolio_url" 
                                           name="portfolio_url" 
                                           type="url" 
                                           class="mt-1 block w-full rounded-xl" 
                                           :value="old('portfolio_url', $profile?->portfolio_url ?? '')" 
                                           placeholder="https://budisantoso.dev" />
-                            <x-input-error class="mt-2" :messages="$errors->get('portfolio_url')" />
                         </div>
 
                         <div>
@@ -382,55 +369,11 @@
                             <x-input-error class="mt-2" :messages="$errors->get('address')" />
                         </div>
 
-                        <!-- Summary with AI Assistant -->
-                        <div x-data="{
-                            aiLoading: false,
-                            aiTone: 'professional',
-                            aiLang: 'id',
-                            async generateAiSummary() {
-                                const headline = document.getElementById('headline')?.value || '';
-                                this.aiLoading = true;
-                                try {
-                                    const res = await fetch('{{ route('ai.generate-summary') }}', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json',
-                                            'X-CSRF-TOKEN': document.querySelector('meta[name=\'csrf-token\']').getAttribute('content'),
-                                            'Accept': 'application/json'
-                                        },
-                                        body: JSON.stringify({
-                                            headline: headline,
-                                            tone: this.aiTone,
-                                            lang: this.aiLang
-                                        })
-                                    });
-                                    const data = await res.json();
-                                    if (data.status === 'success' && data.summary) {
-                                        document.getElementById('summary').value = data.summary;
-                                        window.dispatchEvent(new CustomEvent('notify', { detail: 'Ringkasan profesional berhasil dibuat oleh AI!' }));
-                                    }
-                                } catch (e) {
-                                    window.dispatchEvent(new CustomEvent('notify', { detail: 'Gagal membuat ringkasan AI: ' + e.message }));
-                                } finally {
-                                    this.aiLoading = false;
-                                }
-                            }
-                        }">
-                            <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
-                                <x-input-label for="summary" :value="__('Ringkasan Profil (Professional Summary)')" />
-                                <div class="flex items-center gap-2">
-                                    <button type="button" 
-                                            @click="generateAiSummary()" 
-                                            :disabled="aiLoading" 
-                                            class="inline-flex items-center gap-1.5 px-3 py-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-xs font-bold rounded-lg shadow-sm transition disabled:opacity-50 cursor-pointer">
-                                        <svg x-show="!aiLoading" class="w-3.5 h-3.5 text-yellow-300" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                                        <svg x-show="aiLoading" class="animate-spin w-3.5 h-3.5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
-                                        <span x-text="aiLoading ? 'Menyusun...' : '✨ Bantu Tulis dengan AI'"></span>
-                                    </button>
-                                </div>
-                            </div>
+                        <!-- Summary -->
+                        <div>
+                            <x-input-label for="summary" :value="__('Ringkasan Profil (Professional Summary)') />
                             <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">
-                                {{ __('Tuliskan 2-4 kalimat ringkas yang merangkum latar belakang dan spesialisasi Anda, atau gunakan asisten AI di atas.') }}
+                                {{ __('Tuliskan 2-4 kalimat ringkas yang merangkum latar belakang, minat spesialisasi, dan nilai tambah Anda.') }}
                             </p>
                             <textarea id="summary" 
                                       name="summary" 

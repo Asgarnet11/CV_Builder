@@ -42,7 +42,6 @@ class CvProfileUpdateRequest extends FormRequest
             'address' => ['nullable', 'string'],
             'summary' => ['nullable', 'string'],
             'linkedin_url' => ['nullable', 'url'],
-            'github_url' => ['nullable', 'url'],
             'portfolio_url' => ['nullable', 'url'],
             'theme_color' => ['nullable', 'string', 'regex:/^#[a-fA-F0-9]{6}$/'],
             'show_education' => ['nullable', 'boolean'],

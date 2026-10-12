@@ -115,25 +115,25 @@
             @if ($profile?->address) | {{ $profile->address }} @endif
             <br>
             @if ($profile?->linkedin_url) {{ $profile->linkedin_url }} @endif
-            @if ($profile?->github_url) | {{ $profile->github_url }} @endif
-            @if ($profile?->portfolio_url) | {{ $profile->portfolio_url }} @endif
+            @if ($profile?->linkedin_url && $profile?->portfolio_url) | @endif
+            @if ($profile?->portfolio_url) {{ $profile->portfolio_url }} @endif
         </div>
     </div>
 
     @if ($profile?->summary)
-        <div class="section-title">{{ $labels['summary_title'] ?? 'Profil Singkat' }}</div>
+        <div class="section-title">Profil Singkat</div>
         <p class="summary-text">{{ $profile->summary }}</p>
     @endif
 
     @if ($experiences->count() > 0 && ($profile->show_experience ?? true))
-        <div class="section-title">{{ $labels['experience_title'] ?? 'Pengalaman Kerja' }}</div>
+        <div class="section-title">Pengalaman Kerja</div>
         @foreach ($experiences as $exp)
             <table class="item-table">
                 <tr>
                     <td class="item-header-left">{{ $exp->position }}</td>
                     <td class="item-header-right">
                         {{ \Carbon\Carbon::parse($exp->start_date)->translatedFormat('M Y') }} - 
-                        {{ $exp->is_current ? ($labels['present'] ?? 'Sekarang') : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->translatedFormat('M Y') : '-') }}
+                        {{ $exp->is_current ? 'Sekarang' : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->translatedFormat('M Y') : '-') }}
                     </td>
                 </tr>
                 <tr>
@@ -149,13 +149,13 @@
     @endif
 
     @if ($education->count() > 0 && ($profile->show_education ?? true))
-        <div class="section-title">{{ $labels['education_title'] ?? 'Pendidikan' }}</div>
+        <div class="section-title">Pendidikan</div>
         @foreach ($education as $edu)
             <table class="item-table">
                 <tr>
                     <td class="item-header-left">{{ $edu->institution }}</td>
                     <td class="item-header-right">
-                        {{ $edu->start_year }} - {{ $edu->end_year ?? ($labels['present'] ?? 'Sekarang') }}
+                        {{ $edu->start_year }} - {{ $edu->end_year ?? 'Sekarang' }}
                     </td>
                 </tr>
                 <tr>
@@ -171,7 +171,7 @@
     @endif
 
     @if ($skills->count() > 0 && ($profile->show_skills ?? true))
-        <div class="section-title">{{ $labels['skills_title'] ?? 'Keahlian' }}</div>
+        <div class="section-title">Keahlian</div>
         <div class="skills-list">
             {{ $skills->map(fn($s) => $s->skill_name . ' (' . $s->level . ')')->join(', ') }}
         </div>

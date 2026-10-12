@@ -127,19 +127,18 @@
                 @if ($profile?->phone) <div>{{ $profile->phone }}</div> @endif
                 @if ($profile?->address) <div>{{ $profile->address }}</div> @endif
                 @if ($profile?->linkedin_url) <div>{{ $profile->linkedin_url }}</div> @endif
-                @if ($profile?->github_url) <div>{{ $profile->github_url }}</div> @endif
                 @if ($profile?->portfolio_url) <div>{{ $profile->portfolio_url }}</div> @endif
             </td>
         </tr>
     </table>
 
     @if ($profile?->summary)
-        <div class="section-title">{{ strtoupper($labels['summary_title'] ?? 'TENTANG') }}</div>
+        <div class="section-title">TENTANG</div>
         <p class="summary-text">{{ $profile->summary }}</p>
     @endif
 
     @if ($experiences->count() > 0 && ($profile->show_experience ?? true))
-        <div class="section-title">{{ strtoupper($labels['experience_title'] ?? 'PENGALAMAN') }}</div>
+        <div class="section-title">PENGALAMAN</div>
         @foreach ($experiences as $exp)
             <table class="item-table">
                 <tr>
@@ -148,7 +147,7 @@
                     </td>
                     <td class="item-date">
                         {{ \Carbon\Carbon::parse($exp->start_date)->format('Y') }} - 
-                        {{ $exp->is_current ? ($labels['present'] ?? 'Present') : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->format('Y') : '-') }}
+                        {{ $exp->is_current ? 'Present' : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->format('Y') : '-') }}
                     </td>
                 </tr>
                 @if ($exp->description)
@@ -161,7 +160,7 @@
     @endif
 
     @if ($education->count() > 0 && ($profile->show_education ?? true))
-        <div class="section-title">{{ strtoupper($labels['education_title'] ?? 'PENDIDIKAN') }}</div>
+        <div class="section-title">PENDIDIKAN</div>
         @foreach ($education as $edu)
             <table class="item-table">
                 <tr>
@@ -169,7 +168,7 @@
                         {{ $edu->institution }} &bull; <span class="item-company">{{ $edu->degree }}</span>
                     </td>
                     <td class="item-date">
-                        {{ $edu->start_year }} - {{ $edu->end_year ?? ($labels['present'] ?? 'Present') }}
+                        {{ $edu->start_year }} - {{ $edu->end_year ?? 'Present' }}
                     </td>
                 </tr>
                 @if ($edu->description)
@@ -182,7 +181,7 @@
     @endif
 
     @if ($skills->count() > 0 && ($profile->show_skills ?? true))
-        <div class="section-title">{{ strtoupper($labels['skills_title'] ?? 'KEAHLIAN') }}</div>
+        <div class="section-title">KEAHLIAN</div>
         <div class="skills-container">
             @foreach ($skills as $skill)
                 <span class="skill-tag">{{ $skill->skill_name }}</span>

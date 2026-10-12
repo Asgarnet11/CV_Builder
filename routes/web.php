@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\AiAssistantController;
 use App\Http\Controllers\CvPreviewController;
 use App\Http\Controllers\CvProfileController;
 use App\Http\Controllers\EducationController;
@@ -40,9 +39,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/skills/reorder', [SkillController::class, 'reorder'])->name('skills.reorder');
     Route::resource('skills', SkillController::class)->except(['show']);
-
-    Route::post('/ai/generate-summary', [AiAssistantController::class, 'generateSummary'])->name('ai.generate-summary');
-    Route::post('/ai/generate-bullet-points', [AiAssistantController::class, 'generateBulletPoints'])->name('ai.generate-bullet-points');
 });
 
 require __DIR__.'/auth.php';
