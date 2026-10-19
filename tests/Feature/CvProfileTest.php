@@ -188,6 +188,8 @@ class CvProfileTest extends TestCase
         $response->assertSee('Ahmad Dahlan');
         $response->assertSee('ahmad@example.com');
         $response->assertSee('No Photo');
+        $response->assertSee('x-data="cvPhotoCropper(', false);
+        $response->assertDontSee('{ this.photoMessage = null; }', false);
     }
 
     /**
