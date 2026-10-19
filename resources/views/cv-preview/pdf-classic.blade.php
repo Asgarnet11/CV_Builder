@@ -104,21 +104,46 @@
 </head>
 <body>
 
-    <div class="header">
-        <h1 class="candidate-name">{{ $profile?->full_name ?? $user->name }}</h1>
-        @if ($profile?->headline)
-            <div class="candidate-headline">{{ $profile->headline }}</div>
-        @endif
-        <div class="contact-info">
-            {{ $profile?->email_cv ?? $user->email }}
-            @if ($profile?->phone) | {{ $profile->phone }} @endif
-            @if ($profile?->address) | {{ $profile->address }} @endif
-            <br>
-            @if ($profile?->linkedin_url) {{ $profile->linkedin_url }} @endif
-            @if ($profile?->linkedin_url && $profile?->portfolio_url) | @endif
-            @if ($profile?->portfolio_url) {{ $profile->portfolio_url }} @endif
+    @if ($photoBase64)
+        <table style="width: 100%; border-bottom: 1.5px solid #000; padding-bottom: 12px; margin-bottom: 16px; border-collapse: collapse;">
+            <tr>
+                <td style="vertical-align: top;">
+                    <h1 class="candidate-name" style="margin: 0 0 4px 0;">{{ $profile?->full_name ?? $user->name }}</h1>
+                    @if ($profile?->headline)
+                        <div class="candidate-headline" style="margin: 0 0 4px 0;">{{ $profile->headline }}</div>
+                    @endif
+                    <div class="contact-info">
+                        {{ $profile?->email_cv ?? $user->email }}
+                        @if ($profile?->phone) | {{ $profile->phone }} @endif
+                        @if ($profile?->address) | {{ $profile->address }} @endif
+                        <br>
+                        @if ($profile?->linkedin_url) {{ $profile->linkedin_url }} @endif
+                        @if ($profile?->linkedin_url && $profile?->portfolio_url) | @endif
+                        @if ($profile?->portfolio_url) {{ $profile->portfolio_url }} @endif
+                    </div>
+                </td>
+                <td style="width: {{ ($photoWidth ?? 85) + 12 }}px; text-align: right; vertical-align: top; padding-left: 12px;">
+                    <img src="{{ $photoBase64 }}" style="width: {{ $photoWidth ?? 85 }}px; height: {{ $photoHeight ?? 110 }}px; border: 1px solid #777; display: block; margin-left: auto;" alt="Foto Profil">
+                </td>
+            </tr>
+        </table>
+    @else
+        <div class="header">
+            <h1 class="candidate-name">{{ $profile?->full_name ?? $user->name }}</h1>
+            @if ($profile?->headline)
+                <div class="candidate-headline">{{ $profile->headline }}</div>
+            @endif
+            <div class="contact-info">
+                {{ $profile?->email_cv ?? $user->email }}
+                @if ($profile?->phone) | {{ $profile->phone }} @endif
+                @if ($profile?->address) | {{ $profile->address }} @endif
+                <br>
+                @if ($profile?->linkedin_url) {{ $profile->linkedin_url }} @endif
+                @if ($profile?->linkedin_url && $profile?->portfolio_url) | @endif
+                @if ($profile?->portfolio_url) {{ $profile->portfolio_url }} @endif
+            </div>
         </div>
-    </div>
+    @endif
 
     @if ($profile?->summary)
         <div class="section-title">Profil Singkat</div>

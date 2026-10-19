@@ -129,6 +129,11 @@
                 @if ($profile?->linkedin_url) <div>{{ $profile->linkedin_url }}</div> @endif
                 @if ($profile?->portfolio_url) <div>{{ $profile->portfolio_url }}</div> @endif
             </td>
+            @if ($photoBase64)
+                <td style="width: {{ ($photoWidth ?? 80) + 12 }}px; text-align: right; vertical-align: top; padding-left: 12px;">
+                    <img src="{{ $photoBase64 }}" style="width: {{ $photoWidth ?? 80 }}px; height: {{ $photoHeight ?? 105 }}px; border-radius: 4px; border: 1px solid #cbd5e1; display: block; margin-left: auto;" alt="Foto Profil">
+                </td>
+            @endif
         </tr>
     </table>
 

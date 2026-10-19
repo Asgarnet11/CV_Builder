@@ -57,12 +57,27 @@ class CvPreviewController extends Controller
         }
 
         $photoBase64 = null;
+        $photoWidth = 85;
+        $photoHeight = 110;
         if ($profile && $profile->photo && Storage::disk('public')->exists($profile->photo)) {
             $photoPath = Storage::disk('public')->path($profile->photo);
             if (file_exists($photoPath)) {
                 $type = pathinfo($photoPath, PATHINFO_EXTENSION);
                 $data = file_get_contents($photoPath);
                 $photoBase64 = 'data:image/'.$type.';base64,'.base64_encode($data);
+
+                // Preserve natural aspect ratio in PDF (max bounds 90px x 115px)
+                if ($imageInfo = @getimagesize($photoPath)) {
+                    $origW = (int) $imageInfo[0];
+                    $origH = (int) $imageInfo[1];
+                    if ($origW > 0 && $origH > 0) {
+                        $maxW = 90;
+                        $maxH = 115;
+                        $ratio = min($maxW / $origW, $maxH / $origH);
+                        $photoWidth = (int) round($origW * $ratio);
+                        $photoHeight = (int) round($origH * $ratio);
+                    }
+                }
             }
         }
 
@@ -74,6 +89,8 @@ class CvPreviewController extends Controller
             'user' => $user,
             'profile' => $profile,
             'photoBase64' => $photoBase64,
+            'photoWidth' => $photoWidth,
+            'photoHeight' => $photoHeight,
             'education' => $user->education,
             'experiences' => $user->experiences,
             'skills' => $user->skills,
