@@ -134,108 +134,372 @@
                         photoPreview: null,
                         showCropper: false,
                         cropper: null,
+                        isUploading: false,
+                        isDeleting: false,
+                        activeRatio: '1:1',
+                        cropWidth: 0,
+                        cropHeight: 0,
+                        photoMessage: null,
+                        errorMessage: null,
+
                         initCropper(imageUrl) {
                             this.showCropper = true;
+                            this.activeRatio = '1:1';
+                            this.errorMessage = null;
+
                             this.$nextTick(() => {
                                 const image = document.getElementById('cropper-image');
-                                image.src = imageUrl;
+                                if (!image) return;
+
                                 if (this.cropper) {
                                     this.cropper.destroy();
+                                    this.cropper = null;
                                 }
-                                this.cropper = new Cropper(image, {
-                                    aspectRatio: 1,
-                                    viewMode: 1,
-                                });
+
+                                image.onload = () => {
+                                    const CropperClass = window.Cropper || Cropper;
+                                    if (!CropperClass) {
+                                        this.errorMessage = 'Pustaka pemotong gambar sedang dimuat, silakan coba sesaat lagi.';
+                                        return;
+                                    }
+
+                                    this.cropper = new CropperClass(image, {
+                                        aspectRatio: 1,
+                                        viewMode: 1,
+                                        dragMode: 'move',
+                                        autoCropArea: 0.9,
+                                        responsive: true,
+                                        restore: false,
+                                        guides: true,
+                                        center: true,
+                                        highlight: false,
+                                        cropBoxMovable: true,
+                                        cropBoxResizable: true,
+                                        toggleDragModeOnDblclick: false,
+                                        crop: (e) => {
+                                            this.cropWidth = Math.round(e.detail.width);
+                                            this.cropHeight = Math.round(e.detail.height);
+                                        }
+                                    });
+                                };
+
+                                image.src = imageUrl;
                             });
                         },
-                        cropImage() {
+
+                        setRatio(ratio) {
+                            this.activeRatio = ratio;
                             if (!this.cropper) return;
-                            const canvas = this.cropper.getCroppedCanvas({
-                                width: 400,
-                                height: 400
-                            });
-                            const base64 = canvas.toDataURL('image/jpeg', 0.9);
-                            this.photoPreview = base64;
-                            this.showCropper = false;
-                            
-                            // Upload via AJAX immediately
-                            fetch('{{ route('cv-profile.update-photo') }}', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': document.querySelector('meta[name=\'csrf-token\']').getAttribute('content')
-                                },
-                                body: JSON.stringify({ photo_base64: base64 })
-                            }).then(res => res.json()).then(data => {
-                                if(data.status === 'success') {
-                                    console.log('Photo updated');
-                                }
-                            });
+                            if (ratio === '1:1') this.cropper.setAspectRatio(1);
+                            else if (ratio === '3:4') this.cropper.setAspectRatio(3 / 4);
+                            else if (ratio === 'free') this.cropper.setAspectRatio(NaN);
                         },
+
+                        zoom(delta) {
+                            if (this.cropper) this.cropper.zoom(delta);
+                        },
+
+                        rotate(deg) {
+                            if (this.cropper) this.cropper.rotate(deg);
+                        },
+
+                        resetCrop() {
+                            if (this.cropper) {
+                                this.cropper.reset();
+                                this.setRatio(this.activeRatio);
+                            }
+                        },
+
                         cancelCrop() {
                             this.showCropper = false;
                             if (this.cropper) {
                                 this.cropper.destroy();
                                 this.cropper = null;
                             }
+                            if (this.$refs.photo) {
+                                this.$refs.photo.value = null;
+                            }
+                        },
+
+                        async cropAndSave() {
+                            if (!this.cropper || this.isUploading) return;
+                            this.isUploading = true;
+                            this.errorMessage = null;
+
+                            try {
+                                // Ambil canvas hasil crop dengan resolusi asli tanpa dipaksa mengecil ke 400x400
+                                const canvas = this.cropper.getCroppedCanvas({
+                                    imageSmoothingEnabled: true,
+                                    imageSmoothingQuality: 'high'
+                                });
+
+                                if (!canvas) {
+                                    throw new Error('Gagal memproses area foto yang dipilih.');
+                                }
+
+                                // Kompresi adaptif: jaga di bawah 2 MB (target aman 1.95 MB) dengan menjaga ketajaman resolusi asli
+                                const TARGET_BYTES = 1950000;
+                                let quality = 0.94;
+                                let base64 = canvas.toDataURL('image/jpeg', quality);
+                                let approxBytes = Math.round((base64.length * 3) / 4);
+
+                                if (approxBytes > TARGET_BYTES) {
+                                    const qualities = [0.90, 0.86, 0.82, 0.78, 0.74, 0.70];
+                                    for (const q of qualities) {
+                                        quality = q;
+                                        base64 = canvas.toDataURL('image/jpeg', quality);
+                                        approxBytes = Math.round((base64.length * 3) / 4);
+                                        if (approxBytes <= TARGET_BYTES) break;
+                                    }
+                                }
+
+                                // Edge case ekstrim bila gambar di atas 30-40 megapixel: skala proporsional secukupnya
+                                let workingCanvas = canvas;
+                                while (approxBytes > TARGET_BYTES && (workingCanvas.width > 1600 || workingCanvas.height > 1600)) {
+                                    const scale = 0.88;
+                                    const newW = Math.round(workingCanvas.width * scale);
+                                    const newH = Math.round(workingCanvas.height * scale);
+                                    const tempCanvas = document.createElement('canvas');
+                                    tempCanvas.width = newW;
+                                    tempCanvas.height = newH;
+                                    const ctx = tempCanvas.getContext('2d');
+                                    ctx.imageSmoothingEnabled = true;
+                                    ctx.imageSmoothingQuality = 'high';
+                                    ctx.drawImage(workingCanvas, 0, 0, newW, newH);
+                                    workingCanvas = tempCanvas;
+                                    base64 = workingCanvas.toDataURL('image/jpeg', 0.85);
+                                    approxBytes = Math.round((base64.length * 3) / 4);
+                                }
+
+                                const csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content');
+                                const response = await fetch('{{ route('cv-profile.update-photo') }}', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
+                                        'X-CSRF-TOKEN': csrfToken
+                                    },
+                                    body: JSON.stringify({ photo_base64: base64 })
+                                });
+
+                                const data = await response.json();
+
+                                if (response.ok && data.status === 'success') {
+                                    this.photoPreview = data.photo_url;
+                                    this.photoMessage = `Foto tersimpan (${data.width} × ${data.height} px • ${data.size_kb} KB)`;
+                                    setTimeout(() => { this.photoMessage = null; }, 6000);
+                                    this.cancelCrop();
+                                } else {
+                                    this.errorMessage = data.message || 'Gagal menyimpan foto profil.';
+                                }
+                            } catch (err) {
+                                this.errorMessage = err.message || 'Terjadi kendala saat memproses foto.';
+                            } finally {
+                                this.isUploading = false;
+                            }
+                        },
+
+                        async deletePhoto() {
+                            if (!confirm('Apakah Anda yakin ingin menghapus foto profil ini?')) return;
+                            this.isDeleting = true;
+                            this.errorMessage = null;
+
+                            try {
+                                const csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content');
+                                const response = await fetch('{{ route('cv-profile.destroy-photo') }}', {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json',
+                                        'X-CSRF-TOKEN': csrfToken
+                                    }
+                                });
+
+                                const data = await response.json();
+                                if (response.ok && data.status === 'success') {
+                                    this.photoPreview = 'deleted';
+                                    this.photoName = null;
+                                    this.photoMessage = 'Foto profil berhasil dihapus.';
+                                    setTimeout(() => { this.photoMessage = null; }, 5000);
+                                } else {
+                                    this.errorMessage = data.message || 'Gagal menghapus foto.';
+                                }
+                            } catch (err) {
+                                this.errorMessage = err.message || 'Terjadi kesalahan saat menghapus foto.';
+                            } finally {
+                                this.isDeleting = false;
+                            }
                         }
                     }">
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">
+                        <label class="block text-sm font-bold text-slate-800 dark:text-slate-200 mb-1">
                             {{ __('Foto Profil Formal') }}
                         </label>
-                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-4">
-                            {{ __('Format: JPG, JPEG, PNG. Maksimal ukuran file: 2 MB (2048 KB).') }}
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4">
+                            {{ __('Format: JPG, JPEG, PNG, WEBP. Maksimal ukuran file setelah kompresi otomatis: 2 MB (2048 KB).') }}
                         </p>
 
-                        <!-- Modal Cropper -->
-                        <div x-show="showCropper" style="display: none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70">
-                            <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-lg overflow-hidden flex flex-col" @click.away="cancelCrop">
-                                <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-                                    <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Potong Foto Profil</h3>
+                        <!-- Modal Cropper Dialog -->
+                        <div x-show="showCropper" 
+                             x-cloak
+                             style="display: none;" 
+                             class="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-slate-900/80 backdrop-blur-sm"
+                             @keydown.escape.window="cancelCrop">
+                            <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl w-full max-w-2xl overflow-hidden flex flex-col border border-slate-200 dark:border-slate-800 transition-all">
+                                
+                                <!-- Modal Header -->
+                                <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                                    <div>
+                                        <h3 class="text-base font-extrabold text-slate-900 dark:text-white flex items-center gap-2">
+                                            <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                                            Potong & Sesuaikan Foto Profil
+                                        </h3>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                            Sesuaikan area foto. Resolusi asli dipertahankan penuh dan ukuran otomatis di bawah 2 MB.
+                                        </p>
+                                    </div>
+                                    <button type="button" @click="cancelCrop" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
                                 </div>
-                                <div class="p-4 bg-gray-50 dark:bg-gray-900 h-[400px]">
-                                    <img id="cropper-image" src="" class="max-w-full block" alt="Crop Image">
+
+                                <!-- Controls Bar (Aspect Ratios & Tools) -->
+                                <div class="px-6 py-3 bg-slate-50 dark:bg-slate-950/50 border-b border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+                                    <!-- Aspect Ratio Presets -->
+                                    <div class="flex items-center gap-1.5 bg-white dark:bg-slate-900 p-1 rounded-xl border border-slate-200 dark:border-slate-800">
+                                        <span class="px-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Rasio:</span>
+                                        <button type="button" 
+                                                @click="setRatio('1:1')"
+                                                :class="activeRatio === '1:1' ? 'bg-primary text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-primary'"
+                                                class="px-2.5 py-1 rounded-lg font-semibold transition">
+                                            1:1 (Persegi)
+                                        </button>
+                                        <button type="button" 
+                                                @click="setRatio('3:4')"
+                                                :class="activeRatio === '3:4' ? 'bg-primary text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-primary'"
+                                                class="px-2.5 py-1 rounded-lg font-semibold transition">
+                                            3:4 (Pas Foto)
+                                        </button>
+                                        <button type="button" 
+                                                @click="setRatio('free')"
+                                                :class="activeRatio === 'free' ? 'bg-primary text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:text-primary'"
+                                                class="px-2.5 py-1 rounded-lg font-semibold transition">
+                                            Bebas
+                                        </button>
+                                    </div>
+
+                                    <!-- Zoom & Rotate Actions -->
+                                    <div class="flex items-center gap-1">
+                                        <button type="button" @click="zoom(0.1)" title="Perbesar (Zoom In)" class="p-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-primary hover:text-primary transition shadow-xs">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"></path></svg>
+                                        </button>
+                                        <button type="button" @click="zoom(-0.1)" title="Perkecil (Zoom Out)" class="p-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-primary hover:text-primary transition shadow-xs">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7"></path></svg>
+                                        </button>
+                                        <button type="button" @click="rotate(-90)" title="Putar Kiri 90°" class="p-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-primary hover:text-primary transition shadow-xs">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a5 5 0 015 5v2m0 0l-3-3m3 3l3-3M3 10l3 3M3 10l3-3"></path></svg>
+                                        </button>
+                                        <button type="button" @click="rotate(90)" title="Putar Kanan 90°" class="p-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-primary hover:text-primary transition shadow-xs">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 10H11a5 5 0 00-5 5v2m0 0l3-3m-3 3l-3-3m18-7l-3 3m3-3l-3-3"></path></svg>
+                                        </button>
+                                        <button type="button" @click="resetCrop" title="Kembalikan Posisi Semula" class="p-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 hover:border-primary hover:text-primary transition shadow-xs">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div class="p-4 border-t border-gray-200 dark:border-gray-700 flex justify-end gap-3">
-                                    <button type="button" @click="cancelCrop" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600">Batal</button>
-                                    <button type="button" @click="cropImage" class="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700">Potong & Simpan</button>
+
+                                <!-- Cropper Canvas Workspace -->
+                                <div class="relative bg-slate-950 p-2 sm:p-4 flex items-center justify-center overflow-hidden h-[340px] sm:h-[400px]">
+                                    <div class="w-full h-full flex items-center justify-center">
+                                        <img id="cropper-image" src="" class="max-w-full max-h-full block" alt="Foto untuk dipotong">
+                                    </div>
+                                </div>
+
+                                <!-- Live Resolution & Compression Bar -->
+                                <div class="px-6 py-2.5 bg-slate-100 dark:bg-slate-800/80 border-t border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-600 dark:text-slate-300">
+                                    <div class="flex items-center gap-1.5">
+                                        <span class="font-bold text-slate-700 dark:text-slate-200">Resolusi Potongan:</span>
+                                        <span class="font-mono bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 font-semibold text-primary" x-text="cropWidth ? (cropWidth + ' × ' + cropHeight + ' px') : 'Menghitung...'"></span>
+                                    </div>
+                                    <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                        <span>Auto-kompres &lt; 2 MB • Resolusi Asli Terjaga Penuh</span>
+                                    </div>
+                                </div>
+
+                                <!-- Error Alert if any -->
+                                <div x-show="errorMessage" x-cloak class="px-6 py-2.5 bg-rose-50 text-rose-700 text-xs font-semibold border-t border-rose-200 flex items-center justify-between">
+                                    <span x-text="errorMessage"></span>
+                                    <button type="button" @click="errorMessage = null" class="text-rose-500 font-bold text-base">&times;</button>
+                                </div>
+
+                                <!-- Modal Footer -->
+                                <div class="p-4 px-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-3 bg-white dark:bg-slate-900">
+                                    <button type="button" 
+                                            @click="cancelCrop" 
+                                            :disabled="isUploading"
+                                            class="px-4 py-2.5 text-xs font-bold text-slate-600 dark:text-slate-300 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg transition disabled:opacity-50">
+                                        Batal
+                                    </button>
+                                    <button type="button" 
+                                            @click="cropAndSave" 
+                                            :disabled="isUploading"
+                                            class="inline-flex items-center gap-2 px-5 py-2.5 text-xs font-bold text-white bg-primary hover:bg-primary-dark rounded-lg shadow-md transition disabled:opacity-50">
+                                        <svg x-show="isUploading" class="animate-spin -ml-1 mr-1 h-3.5 w-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        <span x-text="isUploading ? 'Memproses & Menyimpan...' : 'Potong & Simpan Foto'"></span>
+                                    </button>
                                 </div>
                             </div>
                         </div>
 
+                        <!-- Card Display on Edit Form -->
                         <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
                             <!-- Image Display / Placeholder -->
-                            <div class="shrink-0">
-                                <!-- When new preview is selected -->
-                                <div x-show="photoPreview" style="display: none;">
-                                    <span class="block rounded-2xl w-32 h-32 bg-cover bg-no-repeat bg-center shadow-md border-2 border-indigo-500"
-                                          x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
-                                    </span>
-                                </div>
-
-                                <!-- Current Photo or Placeholder -->
-                                <div x-show="!photoPreview">
-                                    @if ($profile && $profile->photo)
-                                        <div class="relative group">
-                                            <img src="{{ asset('storage/' . $profile->photo) }}" 
-                                                 alt="{{ $profile->full_name }}" 
-                                                 class="w-32 h-32 rounded-2xl object-cover shadow-md border border-gray-200 dark:border-gray-700">
-                                            <span class="absolute bottom-2 right-2 bg-emerald-500 text-white p-1 rounded-full text-xs shadow" title="Foto Tersimpan">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                                </svg>
-                                            </span>
-                                        </div>
-                                    @else
-                                        <!-- No Photo Component -->
-                                        <div class="w-32 h-32 rounded-2xl bg-gray-100 dark:bg-gray-700/60 border-2 border-dashed border-gray-300 dark:border-gray-600 flex flex-col items-center justify-center text-gray-400 dark:text-gray-500">
-                                            <svg class="w-10 h-10 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            <div class="shrink-0 relative">
+                                <template x-if="photoPreview && photoPreview !== 'deleted'">
+                                    <div class="relative group">
+                                        <img :src="photoPreview" 
+                                             alt="Foto Profil" 
+                                             class="w-32 h-32 rounded-2xl object-cover shadow-md border-2 border-primary/50">
+                                        <span class="absolute bottom-2 right-2 bg-emerald-500 text-white p-1 rounded-full text-xs shadow-md" title="Foto Tersimpan">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                                             </svg>
-                                            <span class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">No Photo</span>
-                                        </div>
-                                    @endif
-                                </div>
+                                        </span>
+                                    </div>
+                                </template>
+
+                                <template x-if="!photoPreview || photoPreview === 'deleted'">
+                                    <div>
+                                        @if ($profile && $profile->photo)
+                                            <div x-show="photoPreview !== 'deleted'" class="relative group">
+                                                <img src="{{ asset('storage/' . $profile->photo) }}" 
+                                                     alt="{{ $profile->full_name }}" 
+                                                     class="w-32 h-32 rounded-2xl object-cover shadow-md border border-slate-200 dark:border-slate-700">
+                                                <span class="absolute bottom-2 right-2 bg-emerald-500 text-white p-1 rounded-full text-xs shadow-md" title="Foto Tersimpan">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                                    </svg>
+                                                </span>
+                                            </div>
+                                            <div x-show="photoPreview === 'deleted'" class="w-32 h-32 rounded-2xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-slate-400">
+                                                <svg class="w-10 h-10 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                </svg>
+                                                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">No Photo</span>
+                                            </div>
+                                        @else
+                                            <div class="w-32 h-32 rounded-2xl bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center text-slate-400">
+                                                <svg class="w-10 h-10 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                                </svg>
+                                                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500">No Photo</span>
+                                            </div>
+                                        @endif
+                                    </div>
+                                </template>
                             </div>
 
                             <!-- Upload Input Controls -->
@@ -243,17 +507,18 @@
                                 <input type="file" 
                                        id="photo" 
                                        name="photo_dummy" 
-                                       accept="image/png, image/jpeg, image/jpg"
+                                       accept="image/png, image/jpeg, image/jpg, image/webp"
                                        class="hidden" 
                                        x-ref="photo"
                                        x-on:change="
                                            if ($refs.photo.files.length > 0) {
-                                               photoName = $refs.photo.files[0].name;
+                                               const file = $refs.photo.files[0];
+                                               photoName = file.name;
                                                const reader = new FileReader();
                                                reader.onload = (e) => {
                                                    initCropper(e.target.result);
                                                };
-                                               reader.readAsDataURL($refs.photo.files[0]);
+                                               reader.readAsDataURL(file);
                                                $refs.photo.value = null;
                                            }
                                        " />
@@ -261,25 +526,33 @@
                                 <div class="flex flex-wrap items-center gap-3">
                                     <button type="button" 
                                             x-on:click.prevent="$refs.photo.click()" 
-                                            class="inline-flex items-center px-4 py-2 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 text-sm font-semibold rounded-xl border border-indigo-200 dark:border-indigo-800 transition shadow-sm">
-                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white text-xs font-bold rounded-lg shadow-sm transition">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                                         </svg>
-                                        {{ __('Pilih Berkas Foto') }}
+                                        <span>{{ __('Pilih & Potong Foto') }}</span>
                                     </button>
 
-                                    <button type="button" 
-                                            x-show="photoPreview" 
-                                            x-on:click="photoPreview = null; $refs.photo.value = null; photoName = null;" 
-                                            style="display: none;"
-                                            class="inline-flex items-center px-3 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 text-sm rounded-xl transition">
-                                        {{ __('Batal Ganti') }}
-                                    </button>
+                                    @if ($profile && $profile->photo)
+                                        <button type="button" 
+                                                x-show="photoPreview !== 'deleted'"
+                                                x-on:click="deletePhoto"
+                                                :disabled="isDeleting"
+                                                class="inline-flex items-center gap-1.5 px-3 py-2.5 bg-white dark:bg-slate-800 border border-rose-300 dark:border-rose-900 text-rose-600 dark:text-rose-400 hover:bg-rose-50 text-xs font-bold rounded-lg transition disabled:opacity-50">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                            <span x-text="isDeleting ? 'Menghapus...' : 'Hapus Foto'"></span>
+                                        </button>
+                                    @endif
                                 </div>
 
-                                <div x-show="photoName" class="text-xs text-gray-600 dark:text-gray-300 font-mono" style="display: none;">
-                                    Berkas terpilih: <span x-text="photoName"></span>
+                                <div x-show="photoMessage" x-cloak class="p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
+                                    <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    <span x-text="photoMessage"></span>
                                 </div>
+
+                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    Format: <strong>JPG, JPEG, PNG, WEBP</strong>. Sistem secara otomatis memotong sesuai keinginan Anda dan mengompres ukuran file di bawah <strong>2 MB</strong> dengan mempertahankan ketajaman resolusi asli.
+                                </p>
 
                                 <x-input-error class="mt-1" :messages="$errors->get('photo')" />
                             </div>

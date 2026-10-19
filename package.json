@@ -22,6 +22,6 @@
         "@laravel/multiplex": "^0.4.1"
     },
     "dependencies": {
-        "cropperjs": "^2.3.0"
+        "cropperjs": "^1.7.0"
     }
 }

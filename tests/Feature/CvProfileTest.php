@@ -189,4 +189,141 @@ class CvProfileTest extends TestCase
         $response->assertSee('ahmad@example.com');
         $response->assertSee('No Photo');
     }
+
+    /**
+     * Test uploading cropped photo via AJAX with base64 data.
+     */
+    public function test_ajax_update_photo_with_base64_stores_image_and_returns_metadata(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $im = imagecreatetruecolor(800, 600);
+        $bg = imagecolorallocate($im, 38, 157, 216);
+        imagefilledrectangle($im, 0, 0, 800, 600, $bg);
+        ob_start();
+        imagejpeg($im, null, 90);
+        $raw = ob_get_clean();
+        imagedestroy($im);
+
+        $base64Data = 'data:image/jpeg;base64,'.base64_encode($raw);
+
+        $response = $this->actingAs($user)->postJson(route('cv-profile.update-photo'), [
+            'photo_base64' => $base64Data,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'status' => 'success',
+            'width' => 800,
+            'height' => 600,
+        ]);
+
+        $json = $response->json();
+        $this->assertNotEmpty($json['photo_path']);
+        $this->assertLessThanOrEqual(2048, $json['size_kb']);
+        Storage::disk('public')->assertExists($json['photo_path']);
+
+        $profile = CvProfile::where('user_id', $user->id)->firstOrFail();
+        $this->assertEquals($json['photo_path'], $profile->photo);
+    }
+
+    /**
+     * Test that an oversized base64 image (> 2MB) is automatically compressed under 2MB while keeping original resolution.
+     */
+    public function test_ajax_update_photo_compresses_oversized_image_under_2mb_while_preserving_resolution(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        // Create an uncompressed PNG with high dimensions and varying pixel values to exceed 2MB
+        $width = 1200;
+        $height = 1000;
+        $im = imagecreatetruecolor($width, $height);
+        for ($y = 0; $y < $height; $y += 4) {
+            $color = imagecolorallocate($im, ($y * 7) % 256, ($y * 13) % 256, ($y * 19) % 256);
+            imagefilledrectangle($im, 0, $y, $width, $y + 4, $color);
+        }
+
+        // Uncompressed PNG (level 0) will easily exceed 2.5MB
+        ob_start();
+        imagepng($im, null, 0);
+        $rawPng = ob_get_clean();
+        imagedestroy($im);
+
+        $this->assertGreaterThan(2097152, strlen($rawPng));
+
+        $base64Png = 'data:image/png;base64,'.base64_encode($rawPng);
+
+        $response = $this->actingAs($user)->postJson(route('cv-profile.update-photo'), [
+            'photo_base64' => $base64Png,
+        ]);
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'status' => 'success',
+            'width' => 1200,
+            'height' => 1000,
+        ]);
+
+        $json = $response->json();
+        // File size must be under 2MB (2048 KB)
+        $this->assertLessThanOrEqual(2048, $json['size_kb']);
+        $storedSize = Storage::disk('public')->size($json['photo_path']);
+        $this->assertLessThanOrEqual(2097152, $storedSize);
+
+        // Native resolution was preserved
+        $storedInfo = getimagesizefromstring(Storage::disk('public')->get($json['photo_path']));
+        $this->assertEquals(1200, $storedInfo[0]);
+        $this->assertEquals(1000, $storedInfo[1]);
+    }
+
+    /**
+     * Test that AJAX updatePhoto rejects invalid image base64 data.
+     */
+    public function test_ajax_update_photo_rejects_invalid_base64(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->postJson(route('cv-profile.update-photo'), [
+            'photo_base64' => 'data:image/jpeg;base64,invalidcorruptedstring!!!',
+        ]);
+
+        $response->assertStatus(422);
+        $response->assertJson([
+            'status' => 'error',
+        ]);
+    }
+
+    /**
+     * Test deleting existing profile photo via AJAX.
+     */
+    public function test_destroy_photo_removes_file_and_clears_profile_field(): void
+    {
+        Storage::fake('public');
+        $user = User::factory()->create();
+
+        $photoFile = UploadedFile::fake()->image('avatar.jpg');
+        $path = $photoFile->store('photos', 'public');
+
+        CvProfile::create([
+            'user_id' => $user->id,
+            'full_name' => 'Testing User',
+            'photo' => $path,
+        ]);
+
+        Storage::disk('public')->assertExists($path);
+
+        $response = $this->actingAs($user)->deleteJson(route('cv-profile.destroy-photo'));
+
+        $response->assertStatus(200);
+        $response->assertJson([
+            'status' => 'success',
+        ]);
+
+        Storage::disk('public')->assertMissing($path);
+
+        $profile = CvProfile::where('user_id', $user->id)->firstOrFail();
+        $this->assertNull($profile->photo);
+    }
 }

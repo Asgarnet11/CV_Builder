@@ -48,6 +48,7 @@ class CvProfileUpdateRequest extends FormRequest
             'show_experience' => ['nullable', 'boolean'],
             'show_skills' => ['nullable', 'boolean'],
             'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:2048'],
+            'photo_base64' => ['nullable', 'string'],
         ];
     }
 }

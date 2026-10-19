@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+@import "cropperjs/dist/cropper.css";
 
 @tailwind base;
 @tailwind components;
@@ -26,4 +27,27 @@
 
 body {
     font-family: var(--font-sans);
+}
+
+/* Cropper styling customisation */
+.cropper-view-box {
+    outline: 2px solid #269dd8 !important;
+    outline-color: rgba(38, 157, 216, 0.85) !important;
+}
+.cropper-line {
+    background-color: #269dd8 !important;
+}
+.cropper-point {
+    background-color: #269dd8 !important;
+    width: 9px !important;
+    height: 9px !important;
+}
+.cropper-point.point-se {
+    width: 11px !important;
+    height: 11px !important;
+}
+.cropper-bg {
+    background-image: repeating-linear-gradient(45deg, #1e293b 25%, transparent 25%, transparent 75%, #1e293b 75%, #1e293b), repeating-linear-gradient(45deg, #1e293b 25%, #0f172a 25%, #0f172a 75%, #1e293b 75%, #1e293b) !important;
+    background-position: 0 0, 10px 10px !important;
+    background-size: 20px 20px !important;
 }
