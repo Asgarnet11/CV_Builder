@@ -194,5 +194,10 @@
         </div>
     @endif
 
+    <!-- PDF Footer -->
+    <div style="margin-top: 25px; border-top: 1px solid #e2e8f0; padding-top: 5px; font-size: 8px; color: #94a3b8; text-align: center; font-family: monospace;">
+        Dihasilkan secara resmi melalui LaraCV (Online CV Builder Platform) &bull; {{ date('d F Y') }}
+    </div>
+
 </body>
 </html>

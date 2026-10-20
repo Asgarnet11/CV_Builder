@@ -22,19 +22,24 @@ class CvPreviewController extends Controller
             'experiences' => fn ($q) => $q->orderBy('order_index')->orderByDesc('start_date'),
             'skills' => fn ($q) => $q->orderBy('order_index')->orderBy('skill_name'),
         ]);
+        $profile = $user->cvProfile;
         $template = $request->query('template', 'modern');
 
         if (! in_array($template, ['modern', 'classic', 'minimal'], true)) {
             $template = 'modern';
         }
 
+        [$photoWidth, $photoHeight] = $profile ? $profile->getPhotoDimensions() : [85, 110];
+
         return view('cv-preview.show', [
             'user' => $user,
-            'profile' => $user->cvProfile,
+            'profile' => $profile,
             'education' => $user->education,
             'experiences' => $user->experiences,
             'skills' => $user->skills,
             'template' => $template,
+            'photoWidth' => $photoWidth,
+            'photoHeight' => $photoHeight,
         ]);
     }
 
@@ -57,27 +62,14 @@ class CvPreviewController extends Controller
         }
 
         $photoBase64 = null;
-        $photoWidth = 85;
-        $photoHeight = 110;
+        [$photoWidth, $photoHeight] = $profile ? $profile->getPhotoDimensions() : [85, 110];
+
         if ($profile && $profile->photo && Storage::disk('public')->exists($profile->photo)) {
             $photoPath = Storage::disk('public')->path($profile->photo);
             if (file_exists($photoPath)) {
                 $type = pathinfo($photoPath, PATHINFO_EXTENSION);
                 $data = file_get_contents($photoPath);
                 $photoBase64 = 'data:image/'.$type.';base64,'.base64_encode($data);
-
-                // Preserve natural aspect ratio in PDF (max bounds 90px x 115px)
-                if ($imageInfo = @getimagesize($photoPath)) {
-                    $origW = (int) $imageInfo[0];
-                    $origH = (int) $imageInfo[1];
-                    if ($origW > 0 && $origH > 0) {
-                        $maxW = 90;
-                        $maxH = 115;
-                        $ratio = min($maxW / $origW, $maxH / $origH);
-                        $photoWidth = (int) round($origW * $ratio);
-                        $photoHeight = (int) round($origH * $ratio);
-                    }
-                }
             }
         }
 

@@ -113,10 +113,158 @@ class CvPreviewTest extends TestCase
             'headline' => 'Junior Web Developer',
         ]);
 
-        $response = $this->actingAs($user)->get('/cv-preview/download');
+        foreach (['modern', 'classic', 'minimal'] as $tpl) {
+            $response = $this->actingAs($user)->get('/cv-preview/download?template='.$tpl);
 
-        $response->assertStatus(200);
-        $response->assertHeader('content-type', 'application/pdf');
-        $this->assertStringContainsString('LaraCV_budi_santoso.pdf', $response->headers->get('content-disposition'));
+            $response->assertStatus(200);
+            $response->assertHeader('content-type', 'application/pdf');
+            $this->assertStringContainsString('LaraCV_budi_santoso.pdf', $response->headers->get('content-disposition'));
+        }
+    }
+
+    /**
+     * Test that section visibility toggles are respected in preview across all templates.
+     */
+    public function test_section_visibility_toggles_are_respected_across_templates(): void
+    {
+        $user = User::factory()->create();
+
+        CvProfile::factory()->create([
+            'user_id' => $user->id,
+            'full_name' => 'Aditya Pratama',
+            'show_experience' => false,
+            'show_education' => false,
+            'show_skills' => false,
+        ]);
+
+        Experience::factory()->create([
+            'user_id' => $user->id,
+            'position' => 'Senior Backend Engineer',
+            'company_name' => 'PT Karya Cipta',
+        ]);
+
+        Education::factory()->create([
+            'user_id' => $user->id,
+            'institution' => 'Universitas Indonesia',
+            'degree' => 'S1 Ilmu Komputer',
+        ]);
+
+        Skill::factory()->create([
+            'user_id' => $user->id,
+            'skill_name' => 'Laravel PHP',
+        ]);
+
+        foreach (['modern', 'classic', 'minimal'] as $tpl) {
+            $response = $this->actingAs($user)->get('/cv-preview?template='.$tpl);
+            $response->assertOk();
+            $response->assertDontSee('PT Karya Cipta');
+            $response->assertDontSee('Universitas Indonesia');
+            $response->assertDontSee('Laravel PHP');
+        }
+    }
+
+    /**
+     * Test preview renders aligned section headings and official platform footer.
+     */
+    public function test_preview_renders_aligned_section_headings_and_footer(): void
+    {
+        $user = User::factory()->create();
+
+        CvProfile::factory()->create([
+            'user_id' => $user->id,
+            'full_name' => 'Rina Wijaya',
+            'summary' => 'Profesional manajemen proyek berpengalaman.',
+            'show_experience' => true,
+            'show_education' => true,
+            'show_skills' => true,
+        ]);
+
+        Experience::factory()->create([
+            'user_id' => $user->id,
+            'position' => 'Project Lead',
+            'company_name' => 'Solusi Nusantara',
+        ]);
+
+        Education::factory()->create([
+            'user_id' => $user->id,
+            'institution' => 'Universitas Gadjah Mada',
+            'degree' => 'S1 Manajemen',
+        ]);
+
+        Skill::factory()->create([
+            'user_id' => $user->id,
+            'skill_name' => 'Scrum Master',
+        ]);
+
+        // Modern
+        $responseModern = $this->actingAs($user)->get('/cv-preview?template=modern');
+        $responseModern->assertOk();
+        $responseModern->assertSee('Ringkasan Profesional');
+        $responseModern->assertSee('Pengalaman Kerja');
+        $responseModern->assertSee('Riwayat Pendidikan');
+        $responseModern->assertSee('Keahlian &amp; Kompetensi', false);
+        $responseModern->assertSee('Dihasilkan secara resmi melalui LaraCV (Online CV Builder Platform)');
+
+        // Classic
+        $responseClassic = $this->actingAs($user)->get('/cv-preview?template=classic');
+        $responseClassic->assertOk();
+        $responseClassic->assertSee('PROFIL SINGKAT');
+        $responseClassic->assertSee('PENGALAMAN KERJA');
+        $responseClassic->assertSee('PENDIDIKAN');
+        $responseClassic->assertSee('KEAHLIAN');
+        $responseClassic->assertSee('Dihasilkan secara resmi melalui LaraCV (Online CV Builder Platform)');
+
+        // Minimal
+        $responseMinimal = $this->actingAs($user)->get('/cv-preview?template=minimal');
+        $responseMinimal->assertOk();
+        $responseMinimal->assertSee('TENTANG');
+        $responseMinimal->assertSee('PENGALAMAN');
+        $responseMinimal->assertSee('PENDIDIKAN');
+        $responseMinimal->assertSee('KEAHLIAN');
+        $responseMinimal->assertSee('Dihasilkan secara resmi melalui LaraCV (Online CV Builder Platform)');
+    }
+
+    /**
+     * Test public CV URL renders aligned templates matching PDF output.
+     */
+    public function test_public_cv_renders_aligned_templates(): void
+    {
+        $user = User::factory()->create();
+
+        $profile = CvProfile::factory()->create([
+            'user_id' => $user->id,
+            'full_name' => 'Maya Kartika',
+            'summary' => 'Product designer specializing in accessible design systems.',
+            'slug' => 'maya-kartika-cv',
+            'show_experience' => true,
+            'show_education' => true,
+            'show_skills' => true,
+        ]);
+
+        Experience::factory()->create([
+            'user_id' => $user->id,
+            'position' => 'Design System Lead',
+            'company_name' => 'Studio Kreatif',
+        ]);
+
+        Education::factory()->create([
+            'user_id' => $user->id,
+            'institution' => 'Institut Kesenian Jakarta',
+            'degree' => 'S1 Desain Komunikasi Visual',
+        ]);
+
+        Skill::factory()->create([
+            'user_id' => $user->id,
+            'skill_name' => 'Figma Design Tokens',
+        ]);
+
+        $response = $this->get('/cv/'.$profile->slug.'?template=modern');
+        $response->assertOk();
+        $response->assertSee('Maya Kartika');
+        $response->assertSee('Ringkasan Profesional');
+        $response->assertSee('Pengalaman Kerja');
+        $response->assertSee('Riwayat Pendidikan');
+        $response->assertSee('Keahlian &amp; Kompetensi', false);
+        $response->assertSee('Dihasilkan secara resmi melalui LaraCV (Online CV Builder Platform)');
     }
 }

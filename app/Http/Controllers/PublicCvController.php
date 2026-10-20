@@ -30,6 +30,8 @@ class PublicCvController extends Controller
                 'skills' => fn ($q) => $q->orderBy('order_index')->orderBy('skill_name'),
             ]);
 
+            [$photoWidth, $photoHeight] = $profile->getPhotoDimensions();
+
             return view('cv-preview.public', [
                 'user' => $user,
                 'profile' => $profile,
@@ -37,6 +39,8 @@ class PublicCvController extends Controller
                 'experiences' => $user->experiences,
                 'skills' => $user->skills,
                 'template' => $template,
+                'photoWidth' => $photoWidth,
+                'photoHeight' => $photoHeight,
             ])->render();
         });
     }

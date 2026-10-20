@@ -47,112 +47,106 @@
         <!-- The CV Paper -->
         <div class="flex justify-center py-2 overflow-x-auto">
             @php
-                $accent = $profile?->theme_color ?? '#4f46e5';
+                $accent = $profile?->resolved_theme_color ?? (($profile?->theme_color && $profile->theme_color !== '#000000') ? $profile->theme_color : '#269dd8');
             @endphp
             <style>
                 #cv-paper .text-indigo-600, #cv-paper .text-indigo-500, #cv-paper .text-indigo-900 { color: {{ $accent }} !important; }
                 #cv-paper .bg-indigo-600, #cv-paper .bg-indigo-500 { background-color: {{ $accent }} !important; }
                 #cv-paper .border-indigo-600, #cv-paper .border-indigo-200, #cv-paper .border-indigo-100 { border-color: {{ $accent }} !important; }
                 #cv-paper .bg-indigo-50 { background-color: {{ $accent }}20 !important; }
+                @media print {
+                    body { background: #fff !important; }
+                    .print\:hidden { display: none !important; }
+                    #cv-paper {
+                        box-shadow: none !important;
+                        border: none !important;
+                        padding: 0 !important;
+                        width: 100% !important;
+                        max-width: 100% !important;
+                        min-height: auto !important;
+                    }
+                }
             </style>
-            <div id="cv-paper" class="w-full max-w-[210mm] min-h-[297mm] bg-white text-slate-900 p-8 sm:p-12 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.25)] rounded-sm border border-slate-200 transition-all font-sans">
+            <div id="cv-paper" class="w-full max-w-[210mm] min-h-[297mm] bg-white text-slate-900 p-8 sm:p-10 shadow-[0_20px_50px_rgba(0,0,0,0.18)] rounded-sm border border-slate-200 transition-all font-sans">
 
                 @if ($template === 'modern')
                     <!-- ================= MODERN INDIGO TEMPLATE ================= -->
                     <div>
-                        <!-- Header / Brand Accent -->
-                        <div class="flex flex-col-reverse sm:flex-row sm:items-start justify-between gap-6 pb-6 border-b-2 border-indigo-600">
-                            <div class="space-y-1.5">
-                                <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                        <!-- Header Bar -->
+                        <div class="flex justify-between items-start pb-3 mb-3.5 border-b-2 gap-4" style="border-bottom-color: {{ $accent }};">
+                            <div class="space-y-1">
+                                <h1 class="text-2xl sm:text-[23px] font-bold text-slate-900 tracking-tight leading-tight m-0">
                                     {{ $profile?->full_name ?? $user->name }}
                                 </h1>
                                 @if ($profile?->headline)
-                                    <div class="text-base sm:text-lg font-semibold text-indigo-600">
+                                    <div class="text-xs sm:text-[12.5px] font-semibold" style="color: {{ $accent }};">
                                         {{ $profile->headline }}
                                     </div>
                                 @endif
 
                                 <!-- Contact Meta -->
-                                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 pt-2 font-medium">
+                                <div class="text-[10px] sm:text-[10.5px] text-slate-600 leading-relaxed font-normal pt-0.5">
                                     @if ($profile?->email_cv ?? $user->email)
-                                        <span class="inline-flex items-center gap-1">
-                                            <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                                            {{ $profile?->email_cv ?? $user->email }}
-                                        </span>
+                                        <span>Email: {{ $profile?->email_cv ?? $user->email }}</span>
                                     @endif
                                     @if ($profile?->phone)
-                                        <span class="inline-flex items-center gap-1">
-                                            <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path></svg>
-                                            {{ $profile->phone }}
-                                        </span>
+                                        <span> &bull; Telp: {{ $profile->phone }}</span>
                                     @endif
                                     @if ($profile?->address)
-                                        <span class="inline-flex items-center gap-1">
-                                            <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                            {{ $profile->address }}
-                                        </span>
+                                        <span> &bull; Domisili: {{ $profile->address }}</span>
                                     @endif
-                                </div>
-
-                                <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-indigo-600 font-medium pt-1">
+                                    <br>
                                     @if ($profile?->linkedin_url)
-                                        <a href="{{ $profile->linkedin_url }}" target="_blank" class="inline-flex items-center gap-1 hover:underline">
-                                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                                            LinkedIn
-                                        </a>
+                                        <span>LinkedIn: <a href="{{ $profile->linkedin_url }}" target="_blank" class="hover:underline text-slate-800 font-medium">{{ $profile->linkedin_url }}</a></span>
                                     @endif
                                     @if ($profile?->portfolio_url)
-                                        <a href="{{ $profile->portfolio_url }}" target="_blank" class="inline-flex items-center gap-1 hover:underline">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
-                                            Portofolio
-                                        </a>
+                                        <span> &bull; Portfolio: <a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline text-slate-800 font-medium">{{ $profile->portfolio_url }}</a></span>
                                     @endif
                                 </div>
                             </div>
 
                             <!-- Photo (if available) -->
                             @if ($profile?->photo)
-                                <div class="shrink-0">
+                                <div class="shrink-0 pl-2">
                                     <img src="{{ asset('storage/' . $profile->photo) }}" 
                                          alt="{{ $profile->full_name }}" 
-                                         class="w-24 h-28 object-cover rounded-xl border-2 border-indigo-100 shadow-sm">
+                                         style="width: {{ $photoWidth ?? 85 }}px; height: {{ $photoHeight ?? 110 }}px;"
+                                         class="rounded-[4px] border border-slate-300 object-cover ml-auto">
                                 </div>
                             @endif
                         </div>
 
-                        <!-- Professional Summary -->
+                        <!-- Ringkasan Profesional -->
                         @if ($profile?->summary)
-                            <div class="mt-6">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900 border-b border-indigo-100 pb-1.5 mb-2.5 flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                                    {{ __('Ringkasan Profesional') }}
-                                </h3>
-                                <p class="text-xs sm:text-sm text-slate-700 leading-relaxed text-justify">
+                            <div class="mt-3.5">
+                                <div class="text-[11px] font-bold uppercase tracking-wider text-slate-900 border-l-[3.5px] border-b border-b-slate-200 pl-2 pb-0.5 mb-2" style="border-left-color: {{ $accent }};">
+                                    Ringkasan Profesional
+                                </div>
+                                <p class="text-[10.5px] text-slate-700 leading-relaxed text-justify m-0">
                                     {{ $profile->summary }}
                                 </p>
                             </div>
                         @endif
 
-                        <!-- Experiences Section -->
+                        <!-- Pengalaman Kerja -->
                         @if ($experiences->count() > 0 && ($profile->show_experience ?? true))
-                            <div class="mt-6">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                                    {{ __('Pengalaman Kerja & Organisasi') }}
-                                </h3>
-                                <div class="space-y-4">
+                            <div class="mt-3.5">
+                                <div class="text-[11px] font-bold uppercase tracking-wider text-slate-900 border-l-[3.5px] border-b border-b-slate-200 pl-2 pb-0.5 mb-2.5" style="border-left-color: {{ $accent }};">
+                                    Pengalaman Kerja
+                                </div>
+                                <div class="space-y-2.5">
                                     @foreach ($experiences as $exp)
-                                        <div class="relative pl-4 border-l-2 border-indigo-200">
-                                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                                                <h4 class="text-sm font-bold text-slate-900">{{ $exp->position }}</h4>
-                                                <span class="text-xs font-medium text-slate-500">
+                                        <div>
+                                            <div class="flex justify-between items-baseline text-[11px]">
+                                                <span class="font-bold text-slate-900">{{ $exp->position }}</span>
+                                                <span class="text-[10px] text-slate-500 font-semibold">
                                                     {{ \Carbon\Carbon::parse($exp->start_date)->translatedFormat('M Y') }} - 
                                                     {{ $exp->is_current ? 'Sekarang' : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->translatedFormat('M Y') : '-') }}
                                                 </span>
                                             </div>
-                                            <div class="text-xs font-semibold text-indigo-600">{{ $exp->company_name }}</div>
+                                            <div class="text-[10.5px] font-semibold mt-0.5" style="color: {{ $accent }};">{{ $exp->company_name }}</div>
                                             @if ($exp->description)
-                                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">{!! $exp->description !!}</p>
+                                                <div class="text-[10.5px] text-slate-600 mt-1 leading-relaxed">{!! $exp->description !!}</div>
                                             @endif
                                         </div>
                                     @endforeach
@@ -160,23 +154,24 @@
                             </div>
                         @endif
 
-                        <!-- Education Section -->
+                        <!-- Riwayat Pendidikan -->
                         @if ($education->count() > 0 && ($profile->show_education ?? true))
-                            <div class="mt-6">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                                    {{ __('Riwayat Pendidikan') }}
-                                </h3>
-                                <div class="space-y-3">
+                            <div class="mt-3.5">
+                                <div class="text-[11px] font-bold uppercase tracking-wider text-slate-900 border-l-[3.5px] border-b border-b-slate-200 pl-2 pb-0.5 mb-2.5" style="border-left-color: {{ $accent }};">
+                                    Riwayat Pendidikan
+                                </div>
+                                <div class="space-y-2.5">
                                     @foreach ($education as $edu)
-                                        <div class="relative pl-4 border-l-2 border-indigo-200">
-                                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                                                <h4 class="text-sm font-bold text-slate-900">{{ $edu->institution }}</h4>
-                                                <span class="text-xs font-medium text-slate-500">{{ $edu->start_year }} - {{ $edu->end_year ?? 'Sekarang' }}</span>
+                                        <div>
+                                            <div class="flex justify-between items-baseline text-[11px]">
+                                                <span class="font-bold text-slate-900">{{ $edu->institution }}</span>
+                                                <span class="text-[10px] text-slate-500 font-semibold">
+                                                    {{ $edu->start_year }} - {{ $edu->end_year ?? 'Sekarang' }}
+                                                </span>
                                             </div>
-                                            <div class="text-xs font-semibold text-indigo-600">{{ $edu->degree }}</div>
+                                            <div class="text-[10.5px] font-semibold mt-0.5" style="color: {{ $accent }};">{{ $edu->degree }}</div>
                                             @if ($edu->description)
-                                                <p class="text-xs text-slate-600 mt-0.5">{!! $edu->description !!}</p>
+                                                <div class="text-[10.5px] text-slate-600 mt-1 leading-relaxed">{!! $edu->description !!}</div>
                                             @endif
                                         </div>
                                     @endforeach
@@ -184,77 +179,105 @@
                             </div>
                         @endif
 
-                        <!-- Skills Section -->
+                        <!-- Keahlian & Kompetensi -->
                         @if ($skills->count() > 0 && ($profile->show_skills ?? true))
-                            <div class="mt-6">
-                                <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-900 border-b border-indigo-100 pb-1.5 mb-3 flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                                    {{ __('Keahlian & Kompetensi Teknis') }}
-                                </h3>
-                                <div class="flex flex-wrap gap-2">
+                            <div class="mt-3.5">
+                                <div class="text-[11px] font-bold uppercase tracking-wider text-slate-900 border-l-[3.5px] border-b border-b-slate-200 pl-2 pb-0.5 mb-2" style="border-left-color: {{ $accent }};">
+                                    Keahlian &amp; Kompetensi
+                                </div>
+                                <div class="flex flex-wrap gap-1.5 mt-1">
                                     @foreach ($skills as $skill)
-                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-indigo-50 border border-indigo-200 text-slate-800 text-xs font-medium">
-                                            {{ $skill->skill_name }}
-                                            <span class="text-[10px] font-bold text-indigo-600 uppercase">({{ $skill->level }})</span>
+                                        <span class="inline-block px-2.5 py-1 rounded bg-slate-100 border border-slate-200 text-slate-800 text-[10px]">
+                                            {{ $skill->skill_name }} <span class="font-bold text-[9px] ml-0.5" style="color: {{ $accent }};">({{ $skill->level }})</span>
                                         </span>
                                     @endforeach
                                 </div>
                             </div>
                         @endif
+
+                        <!-- Official Footer -->
+                        <div class="mt-8 pt-2.5 border-t border-dashed border-slate-300 text-[9px] text-slate-400 text-center">
+                            Dihasilkan secara resmi melalui LaraCV (Online CV Builder Platform) &bull; {{ date('d F Y') }}
+                        </div>
                     </div>
 
                 @elseif ($template === 'classic')
                     <!-- ================= CLASSIC EXECUTIVE TEMPLATE ================= -->
-                    <div style="font-family: 'Times New Roman', Times, serif;">
-                        <div class="text-center pb-6 border-b border-slate-300">
-                            <h1 class="text-3xl font-bold text-slate-900 tracking-wide uppercase">
-                                {{ $profile?->full_name ?? $user->name }}
-                            </h1>
-                            @if ($profile?->headline)
-                                <div class="text-sm font-bold text-slate-600 mt-1 uppercase tracking-wider">
-                                    {{ $profile->headline }}
+                    <div style="font-family: 'Times New Roman', Times, serif;" class="text-black">
+                        @if ($profile?->photo)
+                            <div class="flex justify-between items-start pb-3 mb-4 border-b-[1.5px] border-black gap-4">
+                                <div>
+                                    <h1 class="text-2xl sm:text-[25px] font-bold text-black tracking-wide uppercase m-0 leading-tight">
+                                        {{ $profile?->full_name ?? $user->name }}
+                                    </h1>
+                                    @if ($profile?->headline)
+                                        <div class="text-xs sm:text-[13px] font-bold uppercase tracking-wider text-black mt-1">
+                                            {{ $profile->headline }}
+                                        </div>
+                                    @endif
+                                    <div class="text-[11px] sm:text-[11.5px] text-neutral-800 mt-1 leading-snug">
+                                        {{ $profile?->email_cv ?? $user->email }}
+                                        @if ($profile?->phone) | {{ $profile->phone }} @endif
+                                        @if ($profile?->address) | {{ $profile->address }} @endif
+                                        <br>
+                                        @if ($profile?->linkedin_url) <a href="{{ $profile->linkedin_url }}" target="_blank" class="hover:underline text-black">{{ $profile->linkedin_url }}</a> @endif
+                                        @if ($profile?->linkedin_url && $profile?->portfolio_url) | @endif
+                                        @if ($profile?->portfolio_url) <a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline text-black">{{ $profile->portfolio_url }}</a> @endif
+                                    </div>
                                 </div>
-                            @endif
-                            <div class="text-xs text-slate-600 mt-2 space-x-2">
-                                <span>{{ $profile?->email_cv ?? $user->email }}</span>
-                                @if ($profile?->phone) <span>|</span> <span>{{ $profile->phone }}</span> @endif
-                                @if ($profile?->address) <span>|</span> <span>{{ $profile->address }}</span> @endif
+                                <div class="shrink-0 pl-3">
+                                    <img src="{{ asset('storage/' . $profile->photo) }}" style="width: {{ $photoWidth ?? 85 }}px; height: {{ $photoHeight ?? 110 }}px;" class="border border-neutral-600 object-cover ml-auto" alt="Foto Profil">
+                                </div>
                             </div>
-                            @if ($profile?->linkedin_url || $profile?->portfolio_url)
-                                <div class="text-xs text-slate-600 mt-1 space-x-2">
-                                    @if ($profile?->linkedin_url) <a href="{{ $profile->linkedin_url }}" target="_blank" class="hover:underline text-slate-800 font-medium">LinkedIn</a> @endif
-                                    @if ($profile?->linkedin_url && $profile?->portfolio_url) <span>|</span> @endif
-                                    @if ($profile?->portfolio_url) <a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline text-slate-800 font-medium">Portofolio</a> @endif
+                        @else
+                            <div class="text-center pb-4 mb-5 border-b border-black">
+                                <h1 class="text-2xl sm:text-[25px] font-bold text-black tracking-wide uppercase m-0 leading-tight">
+                                    {{ $profile?->full_name ?? $user->name }}
+                                </h1>
+                                @if ($profile?->headline)
+                                    <div class="text-xs sm:text-[13px] font-bold uppercase tracking-wider text-black mt-1">
+                                        {{ $profile->headline }}
+                                    </div>
+                                @endif
+                                <div class="text-[11px] sm:text-[11.5px] text-neutral-800 mt-1.5 leading-snug">
+                                    {{ $profile?->email_cv ?? $user->email }}
+                                    @if ($profile?->phone) | {{ $profile->phone }} @endif
+                                    @if ($profile?->address) | {{ $profile->address }} @endif
+                                    <br>
+                                    @if ($profile?->linkedin_url) <a href="{{ $profile->linkedin_url }}" target="_blank" class="hover:underline text-black">{{ $profile->linkedin_url }}</a> @endif
+                                    @if ($profile?->linkedin_url && $profile?->portfolio_url) | @endif
+                                    @if ($profile?->portfolio_url) <a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline text-black">{{ $profile->portfolio_url }}</a> @endif
                                 </div>
-                            @endif
-                        </div>
+                            </div>
+                        @endif
 
                         @if ($profile?->summary)
-                            <div class="mt-6">
-                                <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800 border-b border-slate-800 pb-1 mb-2">
+                            <div class="mt-4">
+                                <h3 class="text-xs sm:text-[12.5px] font-bold uppercase tracking-wider text-black border-b border-black pb-0.5 mb-2">
                                     PROFIL SINGKAT
                                 </h3>
-                                <p class="text-xs text-slate-900 leading-relaxed text-justify">{{ $profile->summary }}</p>
+                                <p class="text-xs sm:text-[12px] text-neutral-900 leading-relaxed text-justify m-0">{{ $profile->summary }}</p>
                             </div>
                         @endif
 
                         @if ($experiences->count() > 0 && ($profile->show_experience ?? true))
-                            <div class="mt-6">
-                                <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800 border-b border-slate-800 pb-1 mb-3">
+                            <div class="mt-4">
+                                <h3 class="text-xs sm:text-[12.5px] font-bold uppercase tracking-wider text-black border-b border-black pb-0.5 mb-2.5">
                                     PENGALAMAN KERJA
                                 </h3>
-                                <div class="space-y-4">
+                                <div class="space-y-3">
                                     @foreach ($experiences as $exp)
                                         <div>
-                                            <div class="flex justify-between items-baseline text-xs font-bold text-slate-900">
-                                                <span>{{ $exp->position }} - <span class="font-normal italic">{{ $exp->company_name }}</span></span>
-                                                <span class="font-normal text-slate-600 italic">
+                                            <div class="flex justify-between items-baseline text-xs sm:text-[12px]">
+                                                <span class="font-bold text-black">{{ $exp->position }}</span>
+                                                <span class="italic text-neutral-700 text-[11px]">
                                                     {{ \Carbon\Carbon::parse($exp->start_date)->translatedFormat('M Y') }} - 
                                                     {{ $exp->is_current ? 'Sekarang' : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->translatedFormat('M Y') : '-') }}
                                                 </span>
                                             </div>
+                                            <div class="italic text-xs sm:text-[12px] text-black mt-0.5">{{ $exp->company_name }}</div>
                                             @if ($exp->description)
-                                                <p class="text-xs text-slate-800 mt-1 leading-relaxed">{!! $exp->description !!}</p>
+                                                <div class="text-xs sm:text-[11.5px] text-neutral-900 mt-1 leading-relaxed">{!! $exp->description !!}</div>
                                             @endif
                                         </div>
                                     @endforeach
@@ -263,18 +286,21 @@
                         @endif
 
                         @if ($education->count() > 0 && ($profile->show_education ?? true))
-                            <div class="mt-6">
-                                <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800 border-b border-slate-800 pb-1 mb-3">
+                            <div class="mt-4">
+                                <h3 class="text-xs sm:text-[12.5px] font-bold uppercase tracking-wider text-black border-b border-black pb-0.5 mb-2.5">
                                     PENDIDIKAN
                                 </h3>
                                 <div class="space-y-3">
                                     @foreach ($education as $edu)
-                                        <div class="flex justify-between items-baseline text-xs">
-                                            <div>
-                                                <span class="font-bold text-slate-900">{{ $edu->institution }}</span>
-                                                <div class="text-slate-700 italic">{{ $edu->degree }}</div>
+                                        <div>
+                                            <div class="flex justify-between items-baseline text-xs sm:text-[12px]">
+                                                <span class="font-bold text-black">{{ $edu->institution }}</span>
+                                                <span class="italic text-neutral-700 text-[11px]">{{ $edu->start_year }} - {{ $edu->end_year ?? 'Sekarang' }}</span>
                                             </div>
-                                            <span class="text-slate-600 font-medium italic">{{ $edu->start_year }} - {{ $edu->end_year ?? 'Sekarang' }}</span>
+                                            <div class="italic text-xs sm:text-[12px] text-black mt-0.5">{{ $edu->degree }}</div>
+                                            @if ($edu->description)
+                                                <div class="text-xs sm:text-[11.5px] text-neutral-900 mt-1 leading-relaxed">{!! $edu->description !!}</div>
+                                            @endif
                                         </div>
                                     @endforeach
                                 </div>
@@ -282,60 +308,72 @@
                         @endif
 
                         @if ($skills->count() > 0 && ($profile->show_skills ?? true))
-                            <div class="mt-6">
-                                <h3 class="text-xs font-bold uppercase tracking-widest text-slate-800 border-b border-slate-800 pb-1 mb-2">
+                            <div class="mt-4">
+                                <h3 class="text-xs sm:text-[12.5px] font-bold uppercase tracking-wider text-black border-b border-black pb-0.5 mb-2">
                                     KEAHLIAN
                                 </h3>
-                                <p class="text-xs text-slate-800">
+                                <p class="text-xs sm:text-[12px] text-neutral-900 leading-relaxed m-0">
                                     {{ $skills->map(fn($s) => $s->skill_name . ' (' . $s->level . ')')->join(', ') }}
                                 </p>
                             </div>
                         @endif
+
+                        <!-- Official Footer -->
+                        <div class="mt-8 pt-2.5 border-t border-neutral-300 text-[9px] text-neutral-500 text-center italic">
+                            Dihasilkan secara resmi melalui LaraCV (Online CV Builder Platform) &bull; {{ date('d F Y') }}
+                        </div>
                     </div>
 
                 @else
                     <!-- ================= MINIMALIST CLEAN TEMPLATE ================= -->
-                    <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pb-6 border-b border-slate-200">
-                            <div class="sm:col-span-2">
-                                <h1 class="text-4xl font-black text-slate-900 tracking-tighter uppercase">
+                    <div>
+                        <div class="flex justify-between items-start pb-4 mb-5 border-b border-slate-200 gap-4">
+                            <div>
+                                <h1 class="text-2xl sm:text-[28px] font-black text-slate-900 tracking-tighter uppercase m-0 leading-tight">
                                     {{ $profile?->full_name ?? $user->name }}
                                 </h1>
-                                <div class="text-xs font-semibold text-slate-500 uppercase tracking-widest mt-1">
+                                <div class="text-[10px] sm:text-[11px] font-bold text-slate-500 uppercase tracking-widest mt-1">
                                     {{ $profile?->headline ?? 'Professional Profile' }}
                                 </div>
                             </div>
-                            <div class="text-xs text-slate-500 sm:text-right space-y-0.5">
-                                <div>{{ $profile?->email_cv ?? $user->email }}</div>
-                                @if ($profile?->phone) <div>{{ $profile->phone }}</div> @endif
-                                @if ($profile?->address) <div>{{ $profile->address }}</div> @endif
-                                @if ($profile?->linkedin_url) <div><a href="{{ $profile->linkedin_url }}" target="_blank" class="hover:underline text-slate-900 font-bold">LinkedIn</a></div> @endif
-                                @if ($profile?->portfolio_url) <div><a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline text-slate-900 font-bold">Portofolio</a></div> @endif
+                            <div class="flex items-start gap-4 ml-auto text-right">
+                                <div class="text-[9.5px] sm:text-[10px] text-slate-500 space-y-0.5 leading-snug">
+                                    <div>{{ $profile?->email_cv ?? $user->email }}</div>
+                                    @if ($profile?->phone) <div>{{ $profile->phone }}</div> @endif
+                                    @if ($profile?->address) <div>{{ $profile->address }}</div> @endif
+                                    @if ($profile?->linkedin_url) <div><a href="{{ $profile->linkedin_url }}" target="_blank" class="hover:underline font-medium text-slate-700">LinkedIn</a></div> @endif
+                                    @if ($profile?->portfolio_url) <div><a href="{{ $profile->portfolio_url }}" target="_blank" class="hover:underline font-medium text-slate-700">Portofolio</a></div> @endif
+                                </div>
+                                @if ($profile?->photo)
+                                    <div class="shrink-0 pl-2">
+                                        <img src="{{ asset('storage/' . $profile->photo) }}" style="width: {{ $photoWidth ?? 80 }}px; height: {{ $photoHeight ?? 105 }}px;" class="rounded-[4px] border border-slate-300 object-cover ml-auto" alt="Foto Profil">
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
                         @if ($profile?->summary)
-                            <div class="mt-8">
-                                <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">TENTANG</div>
-                                <p class="text-xs text-slate-800 leading-relaxed">{{ $profile->summary }}</p>
+                            <div class="mt-5">
+                                <div class="text-[9.5px] font-black uppercase tracking-[2px] text-slate-400 mb-2">TENTANG</div>
+                                <p class="text-[11px] sm:text-[11.5px] text-slate-800 leading-relaxed text-justify m-0">{{ $profile->summary }}</p>
                             </div>
                         @endif
 
                         @if ($experiences->count() > 0 && ($profile->show_experience ?? true))
-                            <div class="mt-8">
-                                <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">PENGALAMAN</div>
-                                <div class="space-y-5">
+                            <div class="mt-5">
+                                <div class="text-[9.5px] font-black uppercase tracking-[2px] text-slate-400 mb-3">PENGALAMAN</div>
+                                <div class="space-y-3">
                                     @foreach ($experiences as $exp)
                                         <div>
-                                            <div class="flex justify-between text-xs font-bold text-slate-900">
-                                                <span>{{ $exp->position }} &bull; <span class="text-slate-500 font-normal">{{ $exp->company_name }}</span></span>
-                                                <span class="text-slate-400 font-mono text-[11px]">
+                                            <div class="flex justify-between items-baseline text-[11px] sm:text-[11.5px]">
+                                                <span class="font-bold text-slate-900">{{ $exp->position }} &bull; <span class="text-slate-500 font-normal">{{ $exp->company_name }}</span></span>
+                                                <span class="text-slate-400 font-mono text-[9.5px] sm:text-[10px]">
                                                     {{ \Carbon\Carbon::parse($exp->start_date)->format('Y') }} - 
                                                     {{ $exp->is_current ? 'Present' : ($exp->end_date ? \Carbon\Carbon::parse($exp->end_date)->format('Y') : '-') }}
                                                 </span>
                                             </div>
                                             @if ($exp->description)
-                                                <p class="text-xs text-slate-600 mt-1 leading-relaxed">{!! $exp->description !!}</p>
+                                                <div class="text-[10.5px] text-slate-600 mt-1 leading-relaxed">{!! $exp->description !!}</div>
                                             @endif
                                         </div>
                                     @endforeach
@@ -344,13 +382,18 @@
                         @endif
 
                         @if ($education->count() > 0 && ($profile->show_education ?? true))
-                            <div class="mt-8">
-                                <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-4">PENDIDIKAN</div>
-                                <div class="space-y-4">
+                            <div class="mt-5">
+                                <div class="text-[9.5px] font-black uppercase tracking-[2px] text-slate-400 mb-3">PENDIDIKAN</div>
+                                <div class="space-y-3">
                                     @foreach ($education as $edu)
-                                        <div class="flex justify-between text-xs">
-                                            <span><strong class="font-bold text-slate-900">{{ $edu->institution }}</strong> &bull; <span class="text-slate-600">{{ $edu->degree }}</span></span>
-                                            <span class="text-slate-400 font-mono text-[11px]">{{ $edu->start_year }} - {{ $edu->end_year ?? 'Present' }}</span>
+                                        <div>
+                                            <div class="flex justify-between items-baseline text-[11px] sm:text-[11.5px]">
+                                                <span class="font-bold text-slate-900">{{ $edu->institution }} &bull; <span class="text-slate-500 font-normal">{{ $edu->degree }}</span></span>
+                                                <span class="text-slate-400 font-mono text-[9.5px] sm:text-[10px]">{{ $edu->start_year }} - {{ $edu->end_year ?? 'Present' }}</span>
+                                            </div>
+                                            @if ($edu->description)
+                                                <div class="text-[10.5px] text-slate-600 mt-1 leading-relaxed">{!! $edu->description !!}</div>
+                                            @endif
                                         </div>
                                     @endforeach
                                 </div>
@@ -358,17 +401,22 @@
                         @endif
 
                         @if ($skills->count() > 0 && ($profile->show_skills ?? true))
-                            <div class="mt-8">
-                                <div class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">KEAHLIAN</div>
-                                <div class="flex flex-wrap gap-2">
+                            <div class="mt-5">
+                                <div class="text-[9.5px] font-black uppercase tracking-[2px] text-slate-400 mb-2">KEAHLIAN</div>
+                                <div class="flex flex-wrap gap-1.5 mt-1">
                                     @foreach ($skills as $skill)
-                                        <span class="px-2.5 py-1 rounded-md bg-slate-100 text-slate-700 text-xs font-bold">
+                                        <span class="inline-block px-2 py-0.5 rounded bg-slate-100 text-slate-700 text-[9.5px] sm:text-[10px] font-semibold">
                                             {{ $skill->skill_name }}
                                         </span>
                                     @endforeach
                                 </div>
                             </div>
                         @endif
+
+                        <!-- Official Footer -->
+                        <div class="mt-8 pt-2.5 border-t border-slate-200 text-[9px] text-slate-400 text-center font-mono">
+                            Dihasilkan secara resmi melalui LaraCV (Online CV Builder Platform) &bull; {{ date('d F Y') }}
+                        </div>
                     </div>
                 @endif
             </div>
